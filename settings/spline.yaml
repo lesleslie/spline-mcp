@@ -1,0 +1,23 @@
+# Spline MCP Server Configuration
+# Oneiric-compatible settings
+
+server_name: "spline-mcp"
+server_description: "MCP server for Spline.design 3D scene orchestration"
+
+# Spline API Configuration
+# Set SPLINE_API_KEY environment variable for authentication
+api_base_url: "https://api.spline.design/v1"
+api_timeout: 30.0
+
+# Scene Management
+default_scene_id: null
+auto_save: true
+
+# HTTP Transport
+enable_http_transport: false
+http_host: "127.0.0.1"
+http_port: 3048
+
+# Logging
+log_level: "INFO"
+log_json: true
