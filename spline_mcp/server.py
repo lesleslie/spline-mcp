@@ -13,6 +13,7 @@ from spline_mcp.tools import (
     register_generation_tools,
     register_helper_tools,
     register_integration_tools,
+    register_docs_tools,
 )
 
 logger = get_logger_instance("spline-mcp.server")
@@ -41,6 +42,7 @@ def create_app() -> FastMCP:
     register_asset_tools(app)
     register_helper_tools(app)
     register_integration_tools(app)
+    register_docs_tools(app)
 
     # Log registered tools
     logger.info(
