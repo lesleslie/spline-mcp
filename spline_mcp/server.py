@@ -1,24 +1,19 @@
-"""FastMCP server for Spline 3D scene orchestration."""
+"""FastMCP server for Spline code generation and asset management."""
 
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from fastmcp import FastMCP
 
 from spline_mcp import __version__
 from spline_mcp.config import get_logger_instance, get_settings, setup_logging
 from spline_mcp.tools import (
-    register_event_tools,
-    register_material_tools,
-    register_object_tools,
-    register_runtime_tools,
-    register_scene_tools,
+    register_asset_tools,
+    register_generation_tools,
+    register_helper_tools,
+    register_integration_tools,
 )
-
-if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator
 
 logger = get_logger_instance("spline-mcp.server")
 
@@ -34,42 +29,51 @@ def create_app() -> FastMCP:
     logger.info(
         "Initializing spline-mcp server",
         version=APP_VERSION,
-        api_base_url=settings.api_base_url,
+        default_framework=settings.default_framework,
+        websocket_enabled=settings.websocket_enabled,
+        n8n_enabled=settings.n8n_enabled,
     )
 
     app = FastMCP(name=APP_NAME, version=APP_VERSION)
 
     # Register tool groups
-    register_scene_tools(app)
-    register_object_tools(app)
-    register_material_tools(app)
-    register_event_tools(app)
-    register_runtime_tools(app)
+    register_generation_tools(app)
+    register_asset_tools(app)
+    register_helper_tools(app)
+    register_integration_tools(app)
 
     # Log registered tools
     logger.info(
         "Tools registered",
-        scene=["list_scenes", "get_scene", "create_scene", "delete_scene"],
-        objects=[
-            "list_objects",
-            "get_object",
-            "create_object",
-            "update_object",
-            "delete_object",
+        generation=[
+            "generate_react_component",
+            "generate_vanilla_js",
+            "generate_nextjs_component",
+            "generate_event_handler",
+            "generate_variable_binding",
+            "generate_full_integration",
         ],
-        materials=[
-            "list_materials",
-            "create_material",
-            "apply_material",
+        assets=[
+            "download_scene",
+            "validate_scene",
+            "list_cached_scenes",
+            "clear_cache",
+            "get_cache_stats",
         ],
-        events=[
-            "list_events",
-            "create_event",
-            "trigger_event",
+        helpers=[
+            "build_export_url",
+            "parse_scene_url",
+            "list_event_types",
+            "get_event_documentation",
+            "generate_snippet",
         ],
-        runtime=[
-            "get_runtime_state",
-            "set_variable",
+        integration=[
+            "get_websocket_status",
+            "subscribe_to_channel",
+            "get_n8n_status",
+            "generate_n8n_workflow",
+            "trigger_n8n_webhook",
+            "get_integration_status",
         ],
     )
 

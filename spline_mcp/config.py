@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -41,34 +41,82 @@ class SplineSettings(BaseSettings):
         description="Server name for identification",
     )
     server_description: str = Field(
-        default="MCP server for Spline.design 3D scene orchestration",
+        default="MCP server for Spline.design code generation and asset management",
         description="Server description",
     )
 
-    # Spline API configuration
-    api_key: str | None = Field(
-        default=None,
-        description="Spline API key for authentication",
+    # Code generation defaults
+    default_framework: Literal["react", "vanilla", "nextjs"] = Field(
+        default="react",
+        description="Default framework for code generation",
     )
-    api_base_url: str = Field(
-        default="https://api.spline.design/v1",
-        description="Spline API base URL",
+    typescript: bool = Field(
+        default=True,
+        description="Generate TypeScript code by default",
     )
-    api_timeout: float = Field(
-        default=30.0,
-        ge=5.0,
-        le=120.0,
-        description="API request timeout in seconds",
+    lazy_load: bool = Field(
+        default=True,
+        description="Use lazy loading with Suspense by default",
+    )
+    ssr_placeholder: bool = Field(
+        default=False,
+        description="Generate SSR placeholder for Next.js by default",
     )
 
-    # Scene management
-    default_scene_id: str | None = Field(
-        default=None,
-        description="Default scene ID for operations",
+    # Code style
+    indent_spaces: int = Field(
+        default=2,
+        ge=2,
+        le=8,
+        description="Indentation spaces for generated code",
     )
-    auto_save: bool = Field(
+    semicolons: bool = Field(
         default=True,
-        description="Auto-save scene after modifications",
+        description="Use semicolons in generated JavaScript",
+    )
+
+    # Asset management
+    cache_dir: Path = Field(
+        default=Path("~/.spline-mcp/cache").expanduser(),
+        description="Directory for cached .splinecode files",
+    )
+    max_cache_size_mb: int = Field(
+        default=500,
+        ge=100,
+        le=5000,
+        description="Maximum cache size in megabytes",
+    )
+    auto_validate: bool = Field(
+        default=True,
+        description="Automatically validate downloaded scenes",
+    )
+
+    # WebSocket integration (Mahavishnu)
+    websocket_enabled: bool = Field(
+        default=True,
+        description="Enable WebSocket integration with Mahavishnu",
+    )
+    websocket_url: str = Field(
+        default="ws://localhost:8690",
+        description="Mahavishnu WebSocket server URL",
+    )
+    websocket_auto_reconnect: bool = Field(
+        default=True,
+        description="Automatically reconnect on disconnect",
+    )
+
+    # n8n integration
+    n8n_enabled: bool = Field(
+        default=True,
+        description="Enable n8n integration",
+    )
+    n8n_url: str = Field(
+        default="http://localhost:3044",
+        description="n8n server URL",
+    )
+    n8n_api_key: str | None = Field(
+        default=None,
+        description="n8n API key",
     )
 
     # HTTP transport
@@ -105,6 +153,12 @@ class SplineSettings(BaseSettings):
         if v.upper() not in valid:
             raise ValueError(f"Invalid log level: {v}. Must be one of {valid}")
         return v.upper()
+
+    @field_validator("cache_dir", mode="before")
+    @classmethod
+    def expand_cache_dir(cls, v: str | Path) -> Path:
+        """Expand cache directory path."""
+        return Path(v).expanduser()
 
 
 @lru_cache

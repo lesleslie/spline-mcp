@@ -2,16 +2,14 @@
 
 from __future__ import annotations
 
-from spline_mcp.tools.events import register_event_tools
-from spline_mcp.tools.materials import register_material_tools
-from spline_mcp.tools.objects import register_object_tools
-from spline_mcp.tools.runtime import register_runtime_tools
-from spline_mcp.tools.scenes import register_scene_tools
+from spline_mcp.tools.generation import register_generation_tools
+from spline_mcp.tools.assets import register_asset_tools
+from spline_mcp.tools.helpers import register_helper_tools
+from spline_mcp.tools.integration import register_integration_tools
 
 __all__ = [
-    "register_scene_tools",
-    "register_object_tools",
-    "register_material_tools",
-    "register_event_tools",
-    "register_runtime_tools",
+    "register_generation_tools",
+    "register_asset_tools",
+    "register_helper_tools",
+    "register_integration_tools",
 ]

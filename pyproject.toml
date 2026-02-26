@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spline-mcp"
-version = "0.1.1"
-description = "MCP server for Spline.design 3D scene orchestration"
+version = "0.2.0"
+description = "MCP server for Spline.design code generation and asset management"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
 requires-python = ">=3.13"
@@ -29,6 +29,7 @@ dependencies = [
     "typer>=0.15.0",
     "structlog>=25.0.0",
     "uvicorn>=0.30.0",
+    "websockets>=14.0",
 ]
 
 [dependency-groups]
