@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class SplineEventType(str, Enum):
+class SplineEventType(StrEnum):
     """Supported Spline event types."""
 
     MOUSE_DOWN = "mouseDown"
@@ -23,7 +23,7 @@ class SplineEventType(str, Enum):
     SCROLL = "scroll"
 
 
-class FrameworkType(str, Enum):
+class FrameworkType(StrEnum):
     """Supported frameworks for code generation."""
 
     REACT = "react"

@@ -10,10 +10,10 @@ from spline_mcp import __version__
 from spline_mcp.config import get_logger_instance, get_settings, setup_logging
 from spline_mcp.tools import (
     register_asset_tools,
+    register_docs_tools,
     register_generation_tools,
     register_helper_tools,
     register_integration_tools,
-    register_docs_tools,
 )
 
 logger = get_logger_instance("spline-mcp.server")

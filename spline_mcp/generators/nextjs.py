@@ -20,14 +20,12 @@ class NextJSGenerator(CodeGenerator):
     ) -> str:
         """Generate Next.js component with SSR support."""
         opts = options or self.options
-        indent = self._get_indent
 
         # Generate dynamic import for Spline (required for Next.js)
         dynamic_import = self._generate_dynamic_import(opts)
 
         # Build props interface
         props_interface = ""
-        props_destructure = "{ className, style, onError, onLoad }"
 
         if opts.typescript:
             props_interface = f"""interface {opts.component_name}Props {{
@@ -38,7 +36,6 @@ class NextJSGenerator(CodeGenerator):
 }}
 
 """
-            props_destructure = f"{{ className, style, onError, onLoad }}: {opts.component_name}Props"
 
         # Build event handlers
         event_setup = self._build_event_handlers(opts)
@@ -79,10 +76,10 @@ const Spline = dynamic(
     def _build_event_handlers(self, opts: GenerationOptions) -> str:
         """Build event handler setup code."""
         if not opts.event_handlers:
-            return f"const handleLoad = useCallback(() => {{ onLoad?.(); }}, [onLoad]);"
+            return "const handleLoad = useCallback(() => { onLoad?.(); }, [onLoad]);"
 
         indent = self._get_indent(1)
-        lines = [f"const handleLoad = useCallback((splineApp: any) => {{"]
+        lines = ["const handleLoad = useCallback((splineApp: any) => {"]
 
         inner_indent = self._get_indent(2)
         for handler in opts.event_handlers:
@@ -92,7 +89,9 @@ const Spline = dynamic(
             else:
                 target_filter = handler.handler_code
 
-            lines.append(f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{")
+            lines.append(
+                f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{"
+            )
             lines.append(f"{inner_indent}  {target_filter}")
             lines.append(f"{inner_indent}}});")
 
@@ -108,7 +107,7 @@ const Spline = dynamic(
             return ""
 
         ws_url = opts.websocket_url or "ws://localhost:8690"
-        indent = self._get_indent(1)
+        self._get_indent(1)
 
         return f"""// WebSocket integration with soft failover
 const useSplineWebSocket = (url: string = '{ws_url}') => {{
@@ -167,12 +166,16 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
         ]
 
         if opts.include_error_boundary:
-            state_lines.append(f"{indent}const [hasError, setHasError] = useState(false);")
+            state_lines.append(
+                f"{indent}const [hasError, setHasError] = useState(false);"
+            )
 
         # WebSocket hook if enabled
         ws_hook = ""
         if opts.include_websocket:
-            ws_hook = f"{indent}const {{ isConnected, subscribe }} = useSplineWebSocket();"
+            ws_hook = (
+                f"{indent}const {{ isConnected, subscribe }} = useSplineWebSocket();"
+            )
 
         # Error handler
         error_handler = ""
@@ -209,7 +212,7 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
 {indent}return (
 {indent}  <Suspense fallback={{<{opts.component_name}Placeholder />}}>
 {indent}    <Spline
-{indent}      {' '.join(spline_props)}
+{indent}      {" ".join(spline_props)}
 {indent}    />
 {indent}  </Suspense>
 {indent});"""
@@ -217,7 +220,9 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
         # Component wrapper
         props_param = "{ className, style, onError, onLoad }"
         if opts.typescript:
-            props_param = f"{{ className, style, onError, onLoad }}: {opts.component_name}Props"
+            props_param = (
+                f"{{ className, style, onError, onLoad }}: {opts.component_name}Props"
+            )
 
         return f"""export function {opts.component_name}({props_param}) {{
 {chr(10).join(state_lines)}
@@ -301,7 +306,7 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
             "  return (",
             "    <main>",
             f"      <{component_name}",
-            "        className=\"hero-scene\"",
+            '        className="hero-scene"',
             "        style={{ height: '100vh' }}}}",
             "        onError={{(e) => console.error(e)}}",
             "        onLoad={{() => console.log('Loaded!')}}",

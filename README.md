@@ -1,5 +1,11 @@
 # spline-mcp
 
+[![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
+[![Runtime: oneiric](https://img.shields.io/badge/runtime-oneiric-6e5494)](https://github.com/lesleslie/oneiric)
+[![Framework: FastMCP](https://img.shields.io/badge/framework-FastMCP-0ea5e9)](https://github.com/jlowin/fastmcp)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
+
 MCP server for [Spline.design](https://spline.design) code generation and asset management.
 
 ## Overview
@@ -182,7 +188,7 @@ Part of the **Bodai Ecosystem**:
 |-----------|------|------|
 | Mahavishnu | Orchestrator | 8680 |
 | Akosha | Seer | 8682 |
-| Dhruva | Curator | 8683 |
+| Dhara | Curator | 8683 |
 | Session-Buddy | Builder | 8678 |
 | Crackerjack | Inspector | 8676 |
 | **spline-mcp** | 3D Orchestrator | 3048 |

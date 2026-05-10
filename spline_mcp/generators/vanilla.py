@@ -20,7 +20,6 @@ class VanillaJSGenerator(CodeGenerator):
     ) -> str:
         """Generate vanilla JavaScript/HTML for the Spline scene."""
         opts = options or self.options
-        indent = self._get_indent
 
         # Build event handlers
         event_handlers = self._build_event_handlers_code(opts)
@@ -97,7 +96,7 @@ class VanillaJSGenerator(CodeGenerator):
     def _build_event_handlers_code(self, opts: GenerationOptions) -> str:
         """Build event handler registration code."""
         if not opts.event_handlers:
-            return f"        // Scene loaded, no event handlers configured"
+            return "        // Scene loaded, no event handlers configured"
 
         lines = []
         for handler in opts.event_handlers:
@@ -105,11 +104,13 @@ class VanillaJSGenerator(CodeGenerator):
             if handler.target_object:
                 target_filter = f"if (e.target.name === '{handler.target_object}') "
 
-            lines.append(f"        spline.addEventListener('{handler.event_type.value}', (e) => {{")
+            lines.append(
+                f"        spline.addEventListener('{handler.event_type.value}', (e) => {{"
+            )
             lines.append(f"          {target_filter}{{")
             lines.append(f"            {handler.handler_code}")
-            lines.append(f"          }}")
-            lines.append(f"        }});")
+            lines.append("          }")
+            lines.append("        });")
 
         return "\n".join(lines)
 

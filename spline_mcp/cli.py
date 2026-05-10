@@ -9,7 +9,6 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from spline_mcp import __version__
 from spline_mcp.config import get_settings, setup_logging
 
 app = typer.Typer(help="Spline MCP - Code generation and asset management")
@@ -31,7 +30,7 @@ def serve(
     verbose: bool = False,
 ) -> None:
     """Start the MCP server."""
-    settings = get_settings()
+    get_settings()
 
     if http:
         console.print(f"[yellow]Starting HTTP server on {host}:{port}[/]")
@@ -71,9 +70,9 @@ def generate(
     from pathlib import Path
 
     from spline_mcp.generators.base import GenerationOptions
+    from spline_mcp.generators.nextjs import NextJSGenerator
     from spline_mcp.generators.react import ReactGenerator
     from spline_mcp.generators.vanilla import VanillaJSGenerator
-    from spline_mcp.generators.nextjs import NextJSGenerator
 
     settings = get_settings()
 
@@ -125,7 +124,7 @@ def generate(
         console.print(code)
 
     # Also print install instructions
-    console.print(f"\n[blue]Install:[/]")
+    console.print("\n[blue]Install:[/]")
     console.print(f"  {generator.generate_install_instructions()}")
 
 
@@ -136,8 +135,8 @@ def download(
     force: bool = False,
 ) -> None:
     """Download and cache a .splinecode file."""
-    from pathlib import Path
     import asyncio
+    from pathlib import Path
 
     from spline_mcp.assets import SplineAssetManager
 
@@ -173,8 +172,9 @@ def download(
 @app.command()
 def cache_stats() -> None:
     """Show cache statistics."""
-    from spline_mcp.assets import SplineAssetManager
     import asyncio
+
+    from spline_mcp.assets import SplineAssetManager
 
     settings = get_settings()
 
@@ -198,7 +198,7 @@ def cache_stats() -> None:
 @app.command()
 def list_events() -> None:
     """List all supported Spline event types."""
-    from spline_mcp.generators.base import SplineEventType, EVENT_TYPE_DOCS
+    from spline_mcp.generators.base import EVENT_TYPE_DOCS, SplineEventType
 
     table = Table(title="Supported Spline Events")
     table.add_column("Event Type", style="cyan")
@@ -215,8 +215,8 @@ def integration_status() -> None:
     """Check status of integrations."""
     import asyncio
 
-    from spline_mcp.integrations.websocket import WebSocketClient
     from spline_mcp.integrations.n8n import N8NClient
+    from spline_mcp.integrations.websocket import WebSocketClient
 
     settings = get_settings()
 

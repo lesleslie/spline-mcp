@@ -20,7 +20,6 @@ class ReactGenerator(CodeGenerator):
     ) -> str:
         """Generate a React component for the Spline scene."""
         opts = options or self.options
-        indent = self._get_indent
 
         # Build props interface
         props_fields = self._build_props_interface(opts)
@@ -41,7 +40,9 @@ class ReactGenerator(CodeGenerator):
         # Generate TypeScript interface if needed
         interface_code = ""
         if opts.typescript:
-            interface_code = f"interface {opts.component_name}Props {{\n{props_fields}\n}}\n\n"
+            interface_code = (
+                f"interface {opts.component_name}Props {{\n{props_fields}\n}}\n\n"
+            )
 
         # Generate imports
         imports = self._generate_imports(opts)
@@ -58,9 +59,13 @@ class ReactGenerator(CodeGenerator):
         imports = []
 
         if opts.lazy_load:
-            imports.append("import React, {{ Suspense, useRef, useCallback, useState }} from 'react';")
+            imports.append(
+                "import React, {{ Suspense, useRef, useCallback, useState }} from 'react';"
+            )
         else:
-            imports.append("import React, {{ useRef, useCallback, useState }} from 'react';")
+            imports.append(
+                "import React, {{ useRef, useCallback, useState }} from 'react';"
+            )
 
         imports.append("import Spline from '@splinetool/react-spline';")
 
@@ -125,7 +130,9 @@ class ReactGenerator(CodeGenerator):
             else:
                 target_filter = handler.handler_code
 
-            lines.append(f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{")
+            lines.append(
+                f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{"
+            )
             lines.append(f"{inner_indent}  {target_filter}")
             lines.append(f"{inner_indent}}});")
 
@@ -196,7 +203,9 @@ class ReactGenerator(CodeGenerator):
         ]
 
         if opts.include_error_boundary:
-            state_lines.append(f"{indent}const [hasError, setHasError] = useState(false);")
+            state_lines.append(
+                f"{indent}const [hasError, setHasError] = useState(false);"
+            )
 
         state_lines.append("")
 
@@ -227,7 +236,9 @@ class ReactGenerator(CodeGenerator):
         # Handle error handler
         error_handler = ""
         if opts.include_error_boundary:
-            error_handler = f"{indent}const handleError = useCallback((error: Error) => {{\n"
+            error_handler = (
+                f"{indent}const handleError = useCallback((error: Error) => {{\n"
+            )
             error_handler += f"{indent}  setHasError(true);\n"
             error_handler += f"{indent}  setIsLoading(false);\n"
             error_handler += f"{indent}  onError?.(error);\n"
@@ -237,7 +248,9 @@ class ReactGenerator(CodeGenerator):
         # Wrap in Suspense if lazy loading
         if opts.lazy_load:
             body = f"{indent}return (\n"
-            body += f"{indent}  <Suspense fallback={{<{opts.component_name}Fallback />}}>\n"
+            body += (
+                f"{indent}  <Suspense fallback={{<{opts.component_name}Fallback />}}>\n"
+            )
             body += f"{indent}    {spline_component}\n"
             body += f"{indent}  </Suspense>\n"
             body += f"{indent});"
@@ -256,17 +269,17 @@ class ReactGenerator(CodeGenerator):
             f"function {opts.component_name}Fallback() {{",
             f"{indent(1)}return (",
             f"{indent(2)}<div",
-            f"{indent(3)}  className=\"spline-loading\"",
+            f'{indent(3)}  className="spline-loading"',
             f"{indent(3)}  style={{",
             f"{indent(4)}    display: 'flex',",
             f"{indent(4)}    alignItems: 'center',",
             f"{indent(4)}    justifyContent: 'center',",
             f"{indent(4)}    minHeight: '200px'",
             f"{indent(3)}  }}",
-            f"{indent(3)}  aria-busy=\"true\"",
-            f"{indent(3)}  aria-label=\"Loading 3D scene\"",
+            f'{indent(3)}  aria-busy="true"',
+            f'{indent(3)}  aria-label="Loading 3D scene"',
             f"{indent(2)}>",
-            f"{indent(3)}<div className=\"spline-spinner\" />",
+            f'{indent(3)}<div className="spline-spinner" />',
             f"{indent(2)}</div>",
             f"{indent(1)});",
             "}",
@@ -285,7 +298,6 @@ class ReactGenerator(CodeGenerator):
         options: GenerationOptions | None = None,
     ) -> str:
         """Generate standalone event handler code."""
-        opts = options or self.options
         indent = self._get_indent
 
         target_filter = ""
@@ -308,7 +320,6 @@ class ReactGenerator(CodeGenerator):
         options: GenerationOptions | None = None,
     ) -> str:
         """Generate variable binding code."""
-        opts = options or self.options
         indent = self._get_indent
 
         lines = ["const variables = {"]

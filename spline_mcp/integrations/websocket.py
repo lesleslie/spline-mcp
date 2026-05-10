@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
-from enum import Enum
-from typing import Any, Callable
+from collections.abc import Callable
+from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -14,7 +16,7 @@ from spline_mcp.config import get_logger_instance
 logger = get_logger_instance("spline-mcp.websocket")
 
 
-class WebSocketStatus(str, Enum):
+class WebSocketStatus(StrEnum):
     """WebSocket connection status."""
 
     DISCONNECTED = "disconnected"
@@ -119,7 +121,7 @@ class WebSocketClient:
 
             return True
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(
                 "WebSocket connection timeout, continuing without real-time updates",
                 url=self.url,
@@ -140,17 +142,13 @@ class WebSocketClient:
         """Disconnect from WebSocket server."""
         if self._task:
             self._task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._task
-            except asyncio.CancelledError:
-                pass
             self._task = None
 
         if self._websocket:
-            try:
+            with contextlib.suppress(Exception):
                 await self._websocket.close()
-            except Exception:
-                pass
             self._websocket = None
 
         self._status = WebSocketStatus.DISCONNECTED
@@ -177,19 +175,19 @@ class WebSocketClient:
 
         # Send subscription message if connected
         if self.is_connected:
-            await self._send(WebSocketMessage(
-                type="subscribe",
-                channel=channel,
-            ))
+            await self._send(
+                WebSocketMessage(
+                    type="subscribe",
+                    channel=channel,
+                )
+            )
 
         logger.debug("Subscribed to channel", channel=channel)
 
         def unsubscribe() -> None:
             if channel in self._subscribers:
-                try:
+                with contextlib.suppress(ValueError):
                     self._subscribers[channel].remove(handler)
-                except ValueError:
-                    pass
 
         return unsubscribe
 
@@ -214,11 +212,13 @@ class WebSocketClient:
             )
             return False
 
-        await self._send(WebSocketMessage(
-            type="publish",
-            channel=channel,
-            payload=payload,
-        ))
+        await self._send(
+            WebSocketMessage(
+                type="publish",
+                channel=channel,
+                payload=payload,
+            )
+        )
 
         return True
 
@@ -269,7 +269,10 @@ class WebSocketClient:
             self._status = WebSocketStatus.ERROR
 
             # Attempt reconnection if enabled
-            if self.auto_reconnect and self._reconnect_count < self.max_reconnect_attempts:
+            if (
+                self.auto_reconnect
+                and self._reconnect_count < self.max_reconnect_attempts
+            ):
                 self._reconnect_count += 1
                 logger.info(
                     "Attempting reconnection",

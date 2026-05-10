@@ -8,9 +8,9 @@ from spline_mcp.generators.base import (
     GenerationOptions,
     VariableBinding,
 )
+from spline_mcp.generators.nextjs import NextJSGenerator
 from spline_mcp.generators.react import ReactGenerator
 from spline_mcp.generators.vanilla import VanillaJSGenerator
-from spline_mcp.generators.nextjs import NextJSGenerator
 
 __all__ = [
     "CodeGenerator",

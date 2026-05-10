@@ -8,7 +8,9 @@ from fastmcp import FastMCP
 
 from spline_mcp.assets.manager import SplineAssetManager
 from spline_mcp.config import get_logger_instance
-from spline_mcp.generators.base import EVENT_TYPE_DOCS, SplineEventType, get_event_documentation
+from spline_mcp.generators.base import (
+    SplineEventType,
+)
 
 logger = get_logger_instance("spline-mcp.tools.helpers")
 
@@ -204,7 +206,9 @@ obj.transition({
                 "valid_types": list(snippets.keys()),
             }
 
-        code = snippets[snippet_type].get(language, snippets[snippet_type]["typescript"])
+        code = snippets[snippet_type].get(
+            language, snippets[snippet_type]["typescript"]
+        )
 
         return {
             "success": True,

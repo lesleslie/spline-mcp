@@ -9,7 +9,7 @@ Spline does not have a traditional REST API - scenes are managed through:
 
 from __future__ import annotations
 
-from spline_mcp.assets.manager import SplineAssetManager, SceneMetadata
+from spline_mcp.assets.manager import SceneMetadata, SplineAssetManager
 from spline_mcp.assets.validator import ValidationResult, validate_scene_file
 
 # Re-export for backwards compatibility

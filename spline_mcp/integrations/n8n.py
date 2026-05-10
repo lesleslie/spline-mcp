@@ -59,7 +59,7 @@ class N8NClient:
             has_api_key=bool(api_key),
         )
 
-    async def __aenter__(self) -> "N8NClient":
+    async def __aenter__(self) -> N8NClient:
         """Async context manager entry."""
         self._client = httpx.AsyncClient(timeout=30.0)
         return self
@@ -258,11 +258,13 @@ class N8NClient:
         }
 
         # Add variable mappings
-        for i, (var_name, source) in enumerate(variable_mappings.items()):
-            set_variables["parameters"]["values"]["string"].append({
-                "name": var_name,
-                "value": f"={{ $json.{source} }}",
-            })
+        for _i, (var_name, source) in enumerate(variable_mappings.items()):
+            set_variables["parameters"]["values"]["string"].append(
+                {
+                    "name": var_name,
+                    "value": f"={{ $json.{source} }}",
+                }
+            )
 
         # HTTP request node (for client notification)
         http_node = {

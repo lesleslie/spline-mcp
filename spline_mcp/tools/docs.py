@@ -66,12 +66,23 @@ def register_docs_tools(app: FastMCP) -> None:
             },
             "events": {
                 "title": "Event Handling",
-                "event_types": ["mouseDown", "mouseUp", "mouseHover", "keyDown", "keyUp", "scroll"],
+                "event_types": [
+                    "mouseDown",
+                    "mouseUp",
+                    "mouseHover",
+                    "keyDown",
+                    "keyUp",
+                    "scroll",
+                ],
                 "methods": ["addEventListener(type, callback)", "emitEvent(type)"],
             },
             "variables": {
                 "title": "Runtime Variables",
-                "methods": ["setVariable(name, value)", "setVariables(obj)", "getVariable(name)"],
+                "methods": [
+                    "setVariable(name, value)",
+                    "setVariables(obj)",
+                    "getVariable(name)",
+                ],
             },
             "transitions": {
                 "title": "State Transitions",

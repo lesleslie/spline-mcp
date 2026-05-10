@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import gzip
 import json
-import struct
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -74,7 +73,7 @@ def validate_scene_file(path: Path) -> ValidationResult:
         content = path.read_bytes()
 
         # Try to detect format
-        if content[:2] == b'\x1f\x8b':
+        if content[:2] == b"\x1f\x8b":
             # Gzip compressed
             result.metadata["compressed"] = True
             try:

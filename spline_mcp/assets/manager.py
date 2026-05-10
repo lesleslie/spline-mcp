@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+from datetime import UTC
 from pathlib import Path
 from typing import Any
 
@@ -62,7 +63,7 @@ class SplineAssetManager:
             max_size_mb=max_cache_size_mb,
         )
 
-    async def __aenter__(self) -> "SplineAssetManager":
+    async def __aenter__(self) -> SplineAssetManager:
         """Async context manager entry."""
         self._client = httpx.AsyncClient(timeout=60.0, follow_redirects=True)
         return self
@@ -220,11 +221,13 @@ class SplineAssetManager:
         for file_path in self.cache_dir.glob("*.splinecode"):
             try:
                 scene_id = file_path.stem
-                scenes.append(self._create_metadata(
-                    scene_id=scene_id,
-                    scene_url=self.build_export_url(scene_id),
-                    local_path=file_path,
-                ))
+                scenes.append(
+                    self._create_metadata(
+                        scene_id=scene_id,
+                        scene_url=self.build_export_url(scene_id),
+                        local_path=file_path,
+                    )
+                )
             except Exception as e:
                 logger.warning(
                     "Failed to read cached scene metadata",
@@ -312,7 +315,7 @@ class SplineAssetManager:
         content = local_path.read_bytes()
         content_hash = hashlib.sha256(content).hexdigest()[:16]
 
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         return SceneMetadata(
             scene_id=scene_id,
@@ -320,7 +323,7 @@ class SplineAssetManager:
             local_path=local_path,
             file_size=stat.st_size,
             content_hash=content_hash,
-            downloaded_at=datetime.now(timezone.utc).isoformat(),
+            downloaded_at=datetime.now(UTC).isoformat(),
         )
 
     async def _cleanup_if_needed(self) -> None:

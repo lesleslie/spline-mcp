@@ -9,7 +9,6 @@ from fastmcp import FastMCP
 from spline_mcp.config import get_logger_instance, get_settings
 from spline_mcp.generators.base import (
     EventHandler,
-    FrameworkType,
     GenerationOptions,
     SplineEventType,
     VariableBinding,
@@ -78,7 +77,9 @@ def register_generation_tools(app: FastMCP) -> None:
             "framework": "react",
             "typescript": typescript,
             "install_command": generator.generate_install_instructions(),
-            "usage_example": generator.generate_usage_example(component_name, scene_url),
+            "usage_example": generator.generate_usage_example(
+                component_name, scene_url
+            ),
         }
 
     @app.tool()
@@ -180,7 +181,9 @@ def register_generation_tools(app: FastMCP) -> None:
             "framework": "nextjs",
             "typescript": typescript,
             "install_command": generator.generate_install_instructions(),
-            "usage_example": generator.generate_usage_example(component_name, scene_url),
+            "usage_example": generator.generate_usage_example(
+                component_name, scene_url
+            ),
         }
 
     @app.tool()
@@ -253,8 +256,7 @@ def register_generation_tools(app: FastMCP) -> None:
             Generated variable binding code
         """
         bindings = [
-            VariableBinding(name=name, value=value)
-            for name, value in variables.items()
+            VariableBinding(name=name, value=value) for name, value in variables.items()
         ]
 
         if framework == "react":
@@ -311,11 +313,15 @@ def register_generation_tools(app: FastMCP) -> None:
         if event_handlers:
             for h in event_handlers:
                 try:
-                    handlers.append(EventHandler(
-                        event_type=SplineEventType(h.get("event_type", "mouseDown")),
-                        handler_code=h.get("handler_code", "console.log('Event');"),
-                        target_object=h.get("target_object"),
-                    ))
+                    handlers.append(
+                        EventHandler(
+                            event_type=SplineEventType(
+                                h.get("event_type", "mouseDown")
+                            ),
+                            handler_code=h.get("handler_code", "console.log('Event');"),
+                            target_object=h.get("target_object"),
+                        )
+                    )
                 except (ValueError, KeyError):
                     continue
 
@@ -362,7 +368,9 @@ def register_generation_tools(app: FastMCP) -> None:
             "component_name": component_name,
             "framework": framework,
             "install_command": generator.generate_install_instructions(),
-            "usage_example": generator.generate_usage_example(component_name, scene_url),
+            "usage_example": generator.generate_usage_example(
+                component_name, scene_url
+            ),
             "features": {
                 "event_handlers": len(handlers),
                 "variables": len(bindings),

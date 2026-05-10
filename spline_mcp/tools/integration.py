@@ -7,8 +7,8 @@ from typing import Any
 from fastmcp import FastMCP
 
 from spline_mcp.config import get_logger_instance, get_settings
-from spline_mcp.integrations.n8n import N8NClient, N8NWorkflow
-from spline_mcp.integrations.websocket import WebSocketClient, WebSocketStatus
+from spline_mcp.integrations.n8n import N8NClient
+from spline_mcp.integrations.websocket import WebSocketClient
 
 logger = get_logger_instance("spline-mcp.tools.integration")
 

@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+For a shorter, tool-neutral bootstrap document, start with `AGENTS.md`.
+
 ## Project Overview
 
 Spline MCP Server is a Model Context Protocol server for orchestrating Spline.design 3D scenes. It provides tools for managing 3D objects, materials, events, and runtime state.
@@ -14,7 +16,7 @@ Part of the **Bodai Ecosystem**:
 |-----------|------|------|
 | Mahavishnu | Orchestrator | 8680 |
 | Akosha | Seer | 8682 |
-| Dhruva | Curator | 8683 |
+| Dhara | Curator | 8683 |
 | Session-Buddy | Builder | 8678 |
 | Crackerjack | Inspector | 8676 |
 | **spline-mcp** | 3D Orchestrator | 3048 |
@@ -80,10 +82,11 @@ spline_mcp/
 ### Oneiric Configuration
 
 Settings loaded from:
+
 1. Default values in `SplineSettings`
-2. `settings/spline.yaml`
-3. `settings/local.yaml` (gitignored)
-4. Environment variables `SPLINE_*`
+1. `settings/spline.yaml`
+1. `settings/local.yaml` (gitignored)
+1. Environment variables `SPLINE_*`
 
 ### FastMCP Tool Registration
 
