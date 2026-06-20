@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -78,7 +77,9 @@ class TestSplineSettings:
         # Path should be expanded
         assert "~" not in str(settings.cache_dir)
 
-    def test_environment_variable_override(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_environment_variable_override(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test environment variable override."""
         # Clear the cache first
         get_settings.cache_clear()

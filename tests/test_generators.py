@@ -2,18 +2,15 @@
 
 from __future__ import annotations
 
-import pytest
-
 from spline_mcp.generators.base import (
-    CodeGenerator,
     EventHandler,
     GenerationOptions,
     SplineEventType,
     VariableBinding,
 )
+from spline_mcp.generators.nextjs import NextJSGenerator
 from spline_mcp.generators.react import ReactGenerator
 from spline_mcp.generators.vanilla import VanillaJSGenerator
-from spline_mcp.generators.nextjs import NextJSGenerator
 
 
 class TestGenerationOptions:

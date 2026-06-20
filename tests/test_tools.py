@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
 import tempfile
 from pathlib import Path
 
@@ -17,9 +16,8 @@ class TestGenerationTools:
     @pytest.mark.asyncio
     async def test_generate_react_component(self) -> None:
         """Test React component generation tool."""
-        from spline_mcp.tools.generation import register_generation_tools
-        from spline_mcp.generators.react import ReactGenerator
         from spline_mcp.generators.base import GenerationOptions
+        from spline_mcp.generators.react import ReactGenerator
 
         generator = ReactGenerator()
         options = GenerationOptions(
@@ -27,8 +25,7 @@ class TestGenerationTools:
             typescript=True,
         )
         code = generator.generate_component(
-            "https://prod.spline.design/test/scene.splinecode",
-            options
+            "https://prod.spline.design/test/scene.splinecode", options
         )
 
         assert "TestScene" in code
@@ -64,8 +61,8 @@ class TestGenerationTools:
     @pytest.mark.asyncio
     async def test_generate_event_handler_valid(self) -> None:
         """Test event handler generation with valid event type."""
+        from spline_mcp.generators.base import EventHandler
         from spline_mcp.generators.react import ReactGenerator
-        from spline_mcp.generators.base import EventHandler, SplineEventType
 
         generator = ReactGenerator()
         handler = EventHandler(
@@ -88,8 +85,8 @@ class TestGenerationTools:
     @pytest.mark.asyncio
     async def test_generate_variable_binding(self) -> None:
         """Test variable binding generation."""
-        from spline_mcp.generators.react import ReactGenerator
         from spline_mcp.generators.base import VariableBinding
+        from spline_mcp.generators.react import ReactGenerator
 
         generator = ReactGenerator()
         bindings = [
@@ -105,13 +102,12 @@ class TestGenerationTools:
     @pytest.mark.asyncio
     async def test_generate_full_integration_features(self) -> None:
         """Test full integration has all features."""
-        from spline_mcp.generators.react import ReactGenerator
         from spline_mcp.generators.base import (
-            GenerationOptions,
             EventHandler,
+            GenerationOptions,
             VariableBinding,
-            SplineEventType,
         )
+        from spline_mcp.generators.react import ReactGenerator
 
         generator = ReactGenerator()
         handlers = [
@@ -131,16 +127,13 @@ class TestGenerationTools:
         )
 
         code = generator.generate_component(
-            "https://prod.spline.design/test/scene.splinecode",
-            options
+            "https://prod.spline.design/test/scene.splinecode", options
         )
 
         assert "FullScene" in code
         assert "useWebSocket" in code
 
-
         assert "mouseDown" in code
-
 
         assert "color" in code
 
@@ -177,7 +170,6 @@ class TestHelperTools:
     @pytest.mark.asyncio
     async def test_list_event_types(self) -> None:
         """Test listing event types."""
-        from spline_mcp.generators.base import SplineEventType
 
         events = list(SplineEventType)
         assert len(events) > 0
@@ -187,7 +179,7 @@ class TestHelperTools:
     @pytest.mark.asyncio
     async def test_get_event_documentation_valid(self) -> None:
         """Test getting event documentation."""
-        from spline_mcp.generators.base import get_event_documentation, SplineEventType
+        from spline_mcp.generators.base import get_event_documentation
 
         doc = get_event_documentation(SplineEventType.MOUSE_DOWN)
         assert len(doc) > 0
@@ -202,8 +194,9 @@ class TestHelperTools:
     async def test_generate_snippet_load_scene(self) -> None:
         """Test generating load_scene snippet."""
         # Snippet content is tested in the helpers.py code itself
-        from spline_mcp.tools.helpers import register_helper_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.helpers import register_helper_tools
 
         # Create app and register tools
         app = FastMCP(name="test")
@@ -217,10 +210,8 @@ class TestHelperTools:
         """Test generating invalid snippet type is handled in tool."""
         pass
 
-
     def test_event_type_enum_values(self) -> None:
         """Test event type enum has expected values."""
-        from spline_mcp.generators.base import SplineEventType
 
         # These are the actual values in the enum
         expected = [
@@ -245,8 +236,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_runtime_api_docs_overview(self) -> None:
         """Test getting overview documentation."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -256,8 +248,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_runtime_api_docs_events(self) -> None:
         """Test getting events documentation."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -266,8 +259,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_runtime_api_docs_variables(self) -> None:
         """Test getting variables documentation."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -276,8 +270,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_installation_guide_react(self) -> None:
         """Test React installation guide."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -286,8 +281,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_installation_guide_nextjs(self) -> None:
         """Test Next.js installation guide."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -296,8 +292,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_troubleshooting_guide_scene_not_loading(self) -> None:
         """Test troubleshooting guide."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -306,8 +303,9 @@ class TestDocsTools:
     @pytest.mark.asyncio
     async def test_troubleshooting_guide_cors(self) -> None:
         """Test CORS troubleshooting."""
-        from spline_mcp.tools.docs import register_docs_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.docs import register_docs_tools
 
         app = FastMCP(name="test")
         register_docs_tools(app)
@@ -320,7 +318,7 @@ class TestIntegrationTools:
     @pytest.mark.asyncio
     async def test_websocket_client_creation(self) -> None:
         """Test WebSocket client can be created."""
-        from spline_mcp.integrations.websocket import WebSocketClient,        WebSocketStatus
+        from spline_mcp.integrations.websocket import WebSocketClient, WebSocketStatus
 
         client = WebSocketClient(
             url="ws://localhost:8690",
@@ -359,14 +357,14 @@ class TestIntegrationTools:
     @pytest.mark.asyncio
     async def test_integration_status_structure(self) -> None:
         """Test integration status returns correct structure."""
-        from spline_mcp.tools.integration import register_integration_tools
         from fastmcp import FastMCP
+
+        from spline_mcp.tools.integration import register_integration_tools
 
         app = FastMCP(name="test")
         register_integration_tools(app)
         # Tool registered successfully
         assert True
-
 
     @pytest.mark.asyncio
     async def test_websocket_soft_failover(self) -> None:
@@ -392,7 +390,6 @@ class TestIntegrationTools:
         available = await client.check_availability()
         assert available is False
 
-
         # Operations should return None, not raise
         result = await client.trigger_webhook("test", {})
         assert result is None
@@ -404,9 +401,9 @@ class TestAssetTools:
     @pytest.mark.asyncio
     async def test_validate_scene_no_params(self) -> None:
         """Test validation with no parameters."""
-        from spline_mcp.assets.validator import validate_scene_file
-        from pathlib import Path
         import tempfile
+
+        from spline_mcp.assets.validator import validate_scene_file
 
         # Test with nonexistent file
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -418,9 +415,9 @@ class TestAssetTools:
     @pytest.mark.asyncio
     async def test_list_cached_scenes_empty(self) -> None:
         """Test listing cached scenes when empty."""
-        from spline_mcp.assets.manager import SplineAssetManager
-        import tempfile
         from pathlib import Path
+
+        from spline_mcp.assets.manager import SplineAssetManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SplineAssetManager(cache_dir=Path(tmpdir))
@@ -431,9 +428,9 @@ class TestAssetTools:
     @pytest.mark.asyncio
     async def test_get_cache_stats_empty(self) -> None:
         """Test getting cache stats when empty."""
-        from spline_mcp.assets.manager import SplineAssetManager
-        import tempfile
         from pathlib import Path
+
+        from spline_mcp.assets.manager import SplineAssetManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = SplineAssetManager(cache_dir=Path(tmpdir))

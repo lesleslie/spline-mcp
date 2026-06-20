@@ -98,7 +98,7 @@ def register_docs_tools(app: FastMCP) -> None:
                 "note": "Materials typically set in editor, can be modified via variables",
             },
         }
-        return docs.get(topic, {"error": f"Unknown topic: {topic}"})
+        return docs.get(topic, {"error": f"Unknown topic: {topic}"}) # type: ignore
 
     @app.tool()
     async def get_installation_guide(

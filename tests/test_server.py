@@ -48,9 +48,15 @@ class TestServerCreation:
             with patch("spline_mcp.server.setup_logging"):
                 with patch("spline_mcp.server.register_generation_tools") as mock_gen:
                     with patch("spline_mcp.server.register_asset_tools") as mock_asset:
-                        with patch("spline_mcp.server.register_helper_tools") as mock_helper:
-                            with patch("spline_mcp.server.register_integration_tools") as mock_int:
-                                with patch("spline_mcp.server.register_docs_tools") as mock_docs:
+                        with patch(
+                            "spline_mcp.server.register_helper_tools"
+                        ) as mock_helper:
+                            with patch(
+                                "spline_mcp.server.register_integration_tools"
+                            ) as mock_int:
+                                with patch(
+                                    "spline_mcp.server.register_docs_tools"
+                                ) as mock_docs:
                                     app = create_app()
 
                                     mock_gen.assert_called_once()

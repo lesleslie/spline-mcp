@@ -51,8 +51,10 @@ class ReactGenerator(CodeGenerator):
         fallback = self._generate_fallback(opts)
 
         # Assemble component
-        component = f"{imports}\n\n{interface_code}export function {opts.component_name}({props_destructure}) {{\n{websocket_setup}{event_setup}{variable_setup}\n{component_body}\n}}\n\n{fallback}\n"
-        return component.strip()
+        return (
+            f"{imports}\n\n{interface_code}export function {opts.component_name}({props_destructure}) {{\n"
+            f"{websocket_setup}{event_setup}{variable_setup}\n{component_body}\n}}\n\n{fallback}\n"
+        ).strip()
 
     def _generate_imports(self, opts: GenerationOptions) -> str:
         """Generate import statements."""
@@ -102,8 +104,7 @@ class ReactGenerator(CodeGenerator):
 
         props = ["className", "style"]
         if opts.include_error_boundary:
-            props.append("onError")
-        props.append("onLoad")
+            props.extend(("onError", "onLoad"))
 
         # Add variable props
         for var in opts.variables:
@@ -130,16 +131,22 @@ class ReactGenerator(CodeGenerator):
             else:
                 target_filter = handler.handler_code
 
-            lines.append(
-                f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{"
+            lines.extend(
+                (
+                    f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{",
+                    f"{inner_indent}  {target_filter}",
+                    f"{inner_indent}}});",
+                )
             )
-            lines.append(f"{inner_indent}  {target_filter}")
-            lines.append(f"{inner_indent}}});")
 
-        lines.append(f"{inner_indent}setIsLoading(false);")
-        lines.append(f"{inner_indent}onLoad?.();")
-        lines.append(f"{indent}}}, [onLoad]);")
-        lines.append("")
+        lines.extend(
+            (
+                f"{inner_indent}setIsLoading(false);",
+                f"{inner_indent}onLoad?.();",
+                f"{indent}}}, [onLoad]);",
+                "",
+            )
+        )
 
         return "\n".join(lines)
 
@@ -153,11 +160,10 @@ class ReactGenerator(CodeGenerator):
 
         inner_indent = self._get_indent(2)
         for var in opts.variables:
-            value = var.value_source if var.value_source else repr(var.value)
+            value = var.value_source or repr(var.value)
             lines.append(f"{inner_indent}{var.name}: {value},")
 
-        lines.append(f"{indent}}};")
-        lines.append("")
+        lines.extend((f"{indent}}};", ""))
 
         return "\n".join(lines)
 
@@ -227,9 +233,13 @@ class ReactGenerator(CodeGenerator):
         if opts.include_error_boundary:
             spline_props.append("onError={{handleError}}")
         if opts.variables:
-            spline_props.append("variables={{initialVariables}}")
-        spline_props.append("className={{className}}")
-        spline_props.append("style={{style}}")
+            spline_props.extend(
+                (
+                    "variables={{initialVariables}}",
+                    "className={{className}}",
+                    "style={{style}}",
+                )
+            )
 
         spline_component = f"<Spline\n{indent}  {' '.join(spline_props)}\n{indent}/>"
 
@@ -324,11 +334,15 @@ class ReactGenerator(CodeGenerator):
 
         lines = ["const variables = {"]
         for var in variables:
-            value = var.value_source if var.value_source else repr(var.value)
-            lines.append(f"{indent(1)}{var.name}: {value},")
-        lines.append("};")
-        lines.append("")
-        lines.append("splineApp.setVariables(variables);")
+            value = var.value_source or repr(var.value)
+            lines.extend(
+                (
+                    f"{indent(1)}{var.name}: {value},",
+                    "};",
+                    "",
+                    "splineApp.setVariables(variables);",
+                )
+            )
 
         return "\n".join(lines)
 

@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
+from spline_mcp.integrations.n8n import N8NClient, N8NWorkflow
 from spline_mcp.integrations.websocket import (
     WebSocketClient,
     WebSocketMessage,
     WebSocketStatus,
 )
-from spline_mcp.integrations.n8n import N8NClient, N8NWorkflow
 
 
 class TestWebSocketClient:

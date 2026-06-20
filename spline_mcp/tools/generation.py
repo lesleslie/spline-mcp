@@ -8,6 +8,7 @@ from fastmcp import FastMCP
 
 from spline_mcp.config import get_logger_instance, get_settings
 from spline_mcp.generators.base import (
+    CodeGenerator,
     EventHandler,
     GenerationOptions,
     SplineEventType,
@@ -219,6 +220,7 @@ def register_generation_tools(app: FastMCP) -> None:
             target_object=target_object,
         )
 
+        generator: CodeGenerator
         if framework == "react":
             generator = ReactGenerator()
         elif framework == "nextjs":
@@ -259,6 +261,7 @@ def register_generation_tools(app: FastMCP) -> None:
             VariableBinding(name=name, value=value) for name, value in variables.items()
         ]
 
+        generator: CodeGenerator
         if framework == "react":
             generator = ReactGenerator()
         elif framework == "nextjs":
@@ -346,6 +349,7 @@ def register_generation_tools(app: FastMCP) -> None:
         )
 
         # Select generator
+        generator: CodeGenerator
         if framework == "react":
             generator = ReactGenerator(options)
         elif framework == "nextjs":

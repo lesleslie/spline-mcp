@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import gzip
 import json
-import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -93,7 +91,9 @@ class TestSplineAssetManager:
         """Test listing cached scenes."""
         # Create a mock scene file with enough content
         scene_file = tmp_path / "test123.splinecode"
-        scene_file.write_bytes(json.dumps({"objects": [], "materials": []}).encode().ljust(200, b" "))
+        scene_file.write_bytes(
+            json.dumps({"objects": [], "materials": []}).encode().ljust(200, b" ")
+        )
 
         manager = SplineAssetManager(cache_dir=tmp_path)
         scenes = manager.list_cached_scenes()
@@ -169,7 +169,9 @@ class TestSplineAssetManager:
         """Test downloading already cached scene."""
         # Create a valid scene file with enough content
         scene_file = tmp_path / "abc123.splinecode"
-        scene_file.write_bytes(json.dumps({"objects": [], "materials": []}).encode().ljust(200, b" "))
+        scene_file.write_bytes(
+            json.dumps({"objects": [], "materials": []}).encode().ljust(200, b" ")
+        )
 
         async with SplineAssetManager(cache_dir=tmp_path) as manager:
             metadata = await manager.download_scene(
@@ -335,7 +337,7 @@ class TestValidateSceneFile:
         """Test validation of invalid gzip."""
         scene_file = tmp_path / "bad_gzip.splinecode"
         # Gzip magic bytes but invalid content
-        scene_file.write_bytes(b'\x1f\x8b' + b"x" * 200)
+        scene_file.write_bytes(b"\x1f\x8b" + b"x" * 200)
 
         result = validate_scene_file(scene_file)
         assert result.valid is False

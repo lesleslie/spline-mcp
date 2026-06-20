@@ -1,0 +1,56 @@
+{
+  "timestamp": "20260620-041653",
+  "total_errors": 9,
+  "success_count": 0,
+  "total_count": 10,
+  "success_rate": 0.0,
+  "error_groups": {
+    "Max Retries Error": [
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/cli.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/tools/assets.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/tools/generation.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/cli.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/tools/assets.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/tools/generation.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/cli.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/cli.py"
+      },
+      {
+        "type": "Max Retries Error",
+        "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
+        "file": "spline_mcp/cli.py"
+      }
+    ]
+  }
+}

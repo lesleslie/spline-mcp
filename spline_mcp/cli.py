@@ -69,7 +69,7 @@ def generate(
     """Generate integration code for a Spline scene."""
     from pathlib import Path
 
-    from spline_mcp.generators.base import GenerationOptions
+    from spline_mcp.generators.base import CodeGenerator, GenerationOptions
     from spline_mcp.generators.nextjs import NextJSGenerator
     from spline_mcp.generators.react import ReactGenerator
     from spline_mcp.generators.vanilla import VanillaJSGenerator
@@ -93,13 +93,13 @@ def generate(
     )
 
     # Select generator
-    generators = {
-        "react": ReactGenerator,
-        "vanilla": VanillaJSGenerator,
-        "nextjs": NextJSGenerator,
-    }
-
-    generator = generators[framework](options)
+    generator: CodeGenerator
+    if framework == "react":
+        generator = ReactGenerator(options)
+    elif framework == "vanilla":
+        generator = VanillaJSGenerator(options)
+    else:
+        generator = NextJSGenerator(options)
     code = generator.generate_component(scene_url, options)
 
     # Output
@@ -138,11 +138,11 @@ def download(
     import asyncio
     from pathlib import Path
 
-    from spline_mcp.assets import SplineAssetManager
+    from spline_mcp.assets import SceneMetadata, SplineAssetManager
 
     settings = get_settings()
 
-    async def _download() -> dict[str, Any]:
+    async def _download() -> SceneMetadata:
         async with SplineAssetManager(
             cache_dir=settings.cache_dir,
             max_cache_size_mb=settings.max_cache_size_mb,

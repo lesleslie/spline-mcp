@@ -31,7 +31,7 @@ class VanillaJSGenerator(CodeGenerator):
         websocket_code = self._build_websocket_code(opts)
 
         # Generate complete HTML
-        html = f"""<!DOCTYPE html>
+        return (f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -89,9 +89,7 @@ class VanillaJSGenerator(CodeGenerator):
       }});
   </script>
 </body>
-</html>"""
-
-        return html.strip()
+</html>""").strip()
 
     def _build_event_handlers_code(self, opts: GenerationOptions) -> str:
         """Build event handler registration code."""
@@ -104,13 +102,15 @@ class VanillaJSGenerator(CodeGenerator):
             if handler.target_object:
                 target_filter = f"if (e.target.name === '{handler.target_object}') "
 
-            lines.append(
-                f"        spline.addEventListener('{handler.event_type.value}', (e) => {{"
+            lines.extend(
+                (
+                    f"        spline.addEventListener('{handler.event_type.value}', (e) => {{",
+                    f"          {target_filter}{{",
+                    f"            {handler.handler_code}",
+                    "          }",
+                    "        });",
+                )
             )
-            lines.append(f"          {target_filter}{{")
-            lines.append(f"            {handler.handler_code}")
-            lines.append("          }")
-            lines.append("        });")
 
         return "\n".join(lines)
 
@@ -128,8 +128,7 @@ class VanillaJSGenerator(CodeGenerator):
                 value = f"'{value}'"
             lines.append(f"      {var.name}: {value},")
 
-        lines.append("    };")
-        lines.append("")
+        lines.extend(("    };", ""))
 
         return "\n".join(lines)
 
@@ -200,9 +199,7 @@ class VanillaJSGenerator(CodeGenerator):
                 value = f"'{value}'"
             lines.append(f"  {var.name}: {value},")
 
-        lines.append("};")
-        lines.append("")
-        lines.append("spline.setVariables(variables);")
+        lines.extend(("};", "", "spline.setVariables(variables);"))
 
         return "\n".join(lines)
 

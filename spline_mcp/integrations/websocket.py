@@ -64,7 +64,7 @@ class WebSocketClient:
         self._subscribers: dict[str, list[Callable[[Any], None]]] = {}
         self._reconnect_count = 0
         self._websocket: Any = None  # websockets.WebSocketClientProtocol
-        self._task: asyncio.Task | None = None
+        self._task: asyncio.Task | None = None # type: ignore
 
         logger.info(
             "WebSocket client initialized",

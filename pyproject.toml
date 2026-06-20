@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spline-mcp"
-version = "0.2.2"
+version = "0.2.3"
 description = "MCP server for Spline.design code generation and asset management"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
@@ -20,14 +20,12 @@ classifiers = [
 ]
 dependencies = [
     "fastmcp>=2.12.3",
-    "mcp-common>=0.4.8",
     "oneiric>=0.3.6",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.0.0",
     "httpx>=0.28.0",
     "rich>=13.0.0",
     "typer>=0.15.0",
-    "structlog>=25.0.0",
     "uvicorn>=0.30.0",
     "websockets>=14.0",
 ]

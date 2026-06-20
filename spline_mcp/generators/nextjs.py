@@ -52,7 +52,7 @@ class NextJSGenerator(CodeGenerator):
             ssr_placeholder = self._generate_ssr_placeholder(opts)
 
         # Assemble component
-        component = f"""'use client';
+        return f"""'use client';
 
 import React, {{ Suspense, useRef, useCallback, useState }} from 'react';
 {dynamic_import}
@@ -60,9 +60,7 @@ import React, {{ Suspense, useRef, useCallback, useState }} from 'react';
 {component_body}
 
 {ssr_placeholder}
-"""
-
-        return component.strip()
+""".strip()
 
     def _generate_dynamic_import(self, opts: GenerationOptions) -> str:
         """Generate dynamic import for Spline to avoid SSR issues."""
@@ -89,15 +87,21 @@ const Spline = dynamic(
             else:
                 target_filter = handler.handler_code
 
-            lines.append(
-                f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{"
+            lines.extend(
+                (
+                    f"{inner_indent}splineApp.addEventListener('{handler.event_type.value}', (e: any) => {{",
+                    f"{inner_indent}  {target_filter}",
+                    f"{inner_indent}}});",
+                )
             )
-            lines.append(f"{inner_indent}  {target_filter}")
-            lines.append(f"{inner_indent}}});")
 
-        lines.append(f"{inner_indent}setIsLoading(false);")
-        lines.append(f"{inner_indent}onLoad?.();")
-        lines.append(f"{indent}}}, [onLoad]);")
+        lines.extend(
+            (
+                f"{inner_indent}setIsLoading(false);",
+                f"{inner_indent}onLoad?.();",
+                f"{indent}}}, [onLoad]);",
+            )
+        )
 
         return "\n".join(lines)
 
@@ -204,9 +208,9 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
         # Main component
         spline_props = [f'scene="{scene_url}"', "onLoad={handleLoad}"]
         if opts.include_error_boundary:
-            spline_props.append("onError={handleError}")
-        spline_props.append("className={className}")
-        spline_props.append("style={style}")
+            spline_props.extend(
+                ("onError={handleError}", "className={className}", "style={style}")
+            )
 
         body = f"""
 {indent}return (
@@ -275,12 +279,10 @@ const useSplineWebSocket = (url: string = '{ws_url}') => {{
         lines = ["const variables = {"]
 
         for var in variables:
-            value = var.value_source if var.value_source else repr(var.value)
+            value = var.value_source or repr(var.value)
             lines.append(f"  {var.name}: {value},")
 
-        lines.append("};")
-        lines.append("")
-        lines.append("splineApp.setVariables(variables);")
+        lines.extend(("};", "", "splineApp.setVariables(variables);"))
 
         return "\n".join(lines)
 

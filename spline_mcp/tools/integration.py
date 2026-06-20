@@ -68,10 +68,7 @@ def register_integration_tools(app: FastMCP) -> None:
 
         client = await get_websocket_client()
 
-        return {
-            "enabled": True,
-            **client.get_status_dict(),
-        }
+        return {"enabled": True} | client.get_status_dict()
 
     @app.tool()
     async def subscribe_to_channel(
@@ -131,11 +128,7 @@ def register_integration_tools(app: FastMCP) -> None:
         client = await get_n8n_client()
         available = await client.check_availability()
 
-        return {
-            "enabled": True,
-            "available": available,
-            **client.get_status_dict(),
-        }
+        return {"enabled": True, "available": available} | client.get_status_dict()
 
     @app.tool()
     async def generate_n8n_workflow(

@@ -87,16 +87,14 @@ def register_asset_tools(app: FastMCP) -> None:
         from spline_mcp.assets import validate_scene_file
 
         if scene_path:
-            result = validate_scene_file(Path(scene_path))
-            return result.to_dict()
+            return validate_scene_file(Path(scene_path)).to_dict()
 
         if scene_url:
             settings = get_settings()
             async with SplineAssetManager(
                 cache_dir=settings.cache_dir,
             ) as manager:
-                result = await manager.validate_scene(scene_url=scene_url)
-                return result
+                return await manager.validate_scene(scene_url=scene_url)
 
         return {
             "valid": False,

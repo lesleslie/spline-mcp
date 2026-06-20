@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import httpx
 from pydantic import BaseModel, Field
@@ -154,7 +154,7 @@ class N8NClient:
                 workflow_name=workflow.name,
             )
 
-            return response.json()
+            return cast(dict[str, Any], response.json())
 
         except Exception as e:
             logger.warning(
@@ -199,7 +199,7 @@ class N8NClient:
                 webhook_path=webhook_path,
             )
 
-            return response.json()
+            return cast(dict[str, Any], response.json())
 
         except Exception as e:
             logger.warning(
@@ -259,7 +259,7 @@ class N8NClient:
 
         # Add variable mappings
         for _i, (var_name, source) in enumerate(variable_mappings.items()):
-            set_variables["parameters"]["values"]["string"].append(
+            set_variables["parameters"]["values"]["string"].append( # type: ignore
                 {
                     "name": var_name,
                     "value": f"={{ $json.{source} }}",
