@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+from oneiric.core.config import OneiricMCPConfig
 
 from spline_mcp.config import (
     SplineSettings,
@@ -100,6 +101,46 @@ class TestSplineSettings:
 
         # Check that settings can be created
         assert settings.model_config is not None
+
+
+class TestOneiricConvention:
+    """Regression tests pinning the OneiricMCPConfig convention.
+
+    See: docs/superpowers/plans/2026-06-26-mcpserver-settings-convention.md
+    """
+
+    def test_spline_settings_inherits_oneiric_mcp_config(self) -> None:
+        """SplineSettings must inherit from OneiricMCPConfig per convention."""
+        assert issubclass(SplineSettings, OneiricMCPConfig)
+
+    def test_spline_settings_mro_pins_oneiric_base(self) -> None:
+        """MRO must place OneiricMCPConfig directly above SplineSettings.
+
+        This guards against accidental regression to plain BaseSettings /
+        BaseModel and against incorrectly-ordered multiple inheritance.
+        """
+        mro = SplineSettings.__mro__
+        # OneiricMCPConfig must appear before BaseSettings/BaseModel
+        idx_oneiric = mro.index(OneiricMCPConfig)
+        idx_basemodel = mro.index(OneiricMCPConfig.__mro__[1])  # BaseModel
+        assert idx_oneiric < idx_basemodel, (
+            f"OneiricMCPConfig must precede {OneiricMCPConfig.__mro__[1].__name__} "
+            f"in MRO; got {mro}"
+        )
+
+    def test_spline_settings_keeps_spline_env_prefix(self) -> None:
+        """Env prefix must remain SPLINE_ for backward compat with consumers."""
+        assert SplineSettings.model_config.get("env_prefix") == "SPLINE_"
+
+    def test_spline_settings_load_convention_helper(self) -> None:
+        """SplineSettings.load('spline-mcp') returns a valid instance.
+
+        Mirrors the convention in the plan; uses mcp_common.config style
+        layered YAML + env loading via the load() classmethod.
+        """
+        loaded = SplineSettings.load("spline-mcp")
+        assert isinstance(loaded, SplineSettings)
+        assert isinstance(loaded, OneiricMCPConfig)
 
 
 class TestGetSettings:

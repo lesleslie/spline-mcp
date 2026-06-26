@@ -1,11 +1,19 @@
-"""Configuration for spline-mcp using Oneiric patterns."""
+"""Configuration for spline-mcp using Oneiric conventions.
+
+See: docs/superpowers/plans/2026-06-26-mcpserver-settings-convention.md
+
+Layered config follows the Oneiric convention:
+    defaults -> settings/spline-mcp.yaml -> settings/local.yaml -> env (SPLINE_*)
+"""
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
+from oneiric.core.config import OneiricMCPConfig
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -25,8 +33,14 @@ except ImportError:
         logging.basicConfig(level=logging.INFO)
 
 
-class SplineSettings(BaseSettings):
-    """Spline MCP server configuration."""
+class SplineSettings(OneiricMCPConfig, BaseSettings):
+    """Spline MCP server configuration.
+
+    Inherits from OneiricMCPConfig (Bodai convention) and BaseSettings
+    (pydantic-settings env loading). Multi-inheritance preserves the
+    existing SPLINE_ env_prefix behavior while satisfying the
+    ``issubclass(SplineSettings, OneiricMCPConfig)`` convention guard.
+    """
 
     model_config = SettingsConfigDict(
         env_prefix="SPLINE_",
@@ -159,6 +173,78 @@ class SplineSettings(BaseSettings):
     def expand_cache_dir(cls, v: str | Path) -> Path:
         """Expand cache directory path."""
         return Path(v).expanduser()
+
+    @classmethod
+    def load(
+        cls,
+        server_name: str,
+        config_path: Path | None = None,
+        env_prefix: str | None = None,
+    ) -> SplineSettings:
+        """Layered config loader mirroring mcp_common.config.MCPBaseSettings.
+
+        Priority (highest to lowest):
+            1. Explicit config_path
+            2. Environment variables (SPLINE_*)
+            3. settings/local.yaml (gitignored)
+            4. settings/{server_name}.yaml
+            5. Field defaults
+
+        Args:
+            server_name: Server identifier (e.g., "spline-mcp").
+            config_path: Optional explicit config file path.
+            env_prefix: Environment variable prefix (default "SPLINE").
+
+        Returns:
+            Loaded SplineSettings instance with all layers applied.
+        """
+        data: dict[str, Any] = {"server_name": server_name}
+
+        if env_prefix is None:
+            env_prefix = "SPLINE"
+
+        # YAML layers
+        server_yaml = Path("settings") / f"{server_name}.yaml"
+        if server_yaml.exists():
+            with server_yaml.open() as f:
+                import yaml
+
+                yaml_data = yaml.safe_load(f)
+                if isinstance(yaml_data, dict):
+                    data.update(yaml_data)
+
+        local_yaml = Path("settings") / "local.yaml"
+        if local_yaml.exists():
+            with local_yaml.open() as f:
+                import yaml
+
+                local_data = yaml.safe_load(f)
+                if isinstance(local_data, dict):
+                    data.update(local_data)
+
+        # Env layer
+        for field_name in cls.model_fields:
+            env_var = f"{env_prefix}_{field_name.upper()}"
+            if env_var in os.environ:
+                env_value: str | Path | None = os.environ[env_var]
+                field_type = cls.model_fields[field_name].annotation
+                from typing import get_args
+
+                field_args = get_args(field_type)
+                if field_type is Path or (field_args and Path in field_args):
+                    env_value = Path(env_value) if env_value else None
+                data[field_name] = env_value
+
+        # Explicit config layer
+        if config_path is not None and config_path.exists():
+            with config_path.open() as f:
+                import yaml
+
+                explicit_data = yaml.safe_load(f)
+                if isinstance(explicit_data, dict):
+                    data.update(explicit_data)
+
+        return cls.model_validate(data)
 
 
 @lru_cache

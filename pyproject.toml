@@ -20,7 +20,8 @@ classifiers = [
 ]
 dependencies = [
     "fastmcp>=2.12.3",
-    "oneiric>=0.3.6",
+    "mcp-common>=0.16.4",
+    "oneiric>=0.13.3",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.0.0",
     "httpx>=0.28.0",

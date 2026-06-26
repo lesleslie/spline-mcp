@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastmcp import FastMCP
+from mcp_common.fastmcp import FastMCP
+from mcp_common.server.telemetry import FastMCPOpenTelemetryMiddleware
 
 from spline_mcp import __version__
 from spline_mcp.config import get_logger_instance, get_settings, setup_logging
@@ -22,6 +23,15 @@ APP_NAME = "spline-mcp"
 APP_VERSION = __version__
 
 
+def _attach_otel_middleware(app: FastMCP) -> None:
+    """Attach the mcp_common OpenTelemetry middleware to the FastMCP app.
+
+    See: docs/superpowers/plans/2026-06-26-mcpserver-settings-convention.md
+    """
+    middleware = FastMCPOpenTelemetryMiddleware(service_name=APP_NAME)
+    app.add_middleware(middleware)
+
+
 def create_app() -> FastMCP:
     """Create and configure the FastMCP application."""
     settings = get_settings()
@@ -36,6 +46,9 @@ def create_app() -> FastMCP:
     )
 
     app = FastMCP(name=APP_NAME, version=APP_VERSION)
+
+    # OpenTelemetry middleware (Bodai convention)
+    _attach_otel_middleware(app)
 
     # Register tool groups
     register_generation_tools(app)
