@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from mcp_common.fastmcp import FastMCP
+from mcp_common.health import register_http_health_route
 from mcp_common.server.telemetry import FastMCPOpenTelemetryMiddleware
 
 from spline_mcp import __version__
@@ -46,6 +47,13 @@ def create_app() -> FastMCP:
     )
 
     app = FastMCP(name=APP_NAME, version=APP_VERSION)
+
+    # HTTP health endpoint for Claude Code compatibility
+    register_http_health_route(
+        app,
+        service_name=APP_NAME,
+        version=APP_VERSION,
+    )
 
     # OpenTelemetry middleware (Bodai convention)
     _attach_otel_middleware(app)

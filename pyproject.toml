@@ -97,3 +97,6 @@ exclude_lines = [
 [tool.bandit]
 exclude_dirs = [".venv", "tests"]
 skips = ["B101"]
+
+[tool.uv.sources]
+mcp-common = { path = "/Users/les/Projects/mcp-common", editable = true }
