@@ -184,7 +184,7 @@ class CodeGenerator(ABC):
 
 # Event type documentation
 EVENT_TYPE_DOCS: dict[SplineEventType, str] = {
-    SplineEventType.MOUSE_DOWN: "Triggered when mouse button is pressed on an object",
+    SplineEventType.MOUSE_DOWN: "Triggered on mouse click (mouse button is pressed on an object)",
     SplineEventType.MOUSE_UP: "Triggered when mouse button is released",
     SplineEventType.MOUSE_HOVER: "Triggered when mouse enters an object",
     SplineEventType.KEY_DOWN: "Triggered when a key is pressed",
