@@ -259,7 +259,7 @@ class N8NClient:
 
         # Add variable mappings
         for _i, (var_name, source) in enumerate(variable_mappings.items()):
-            set_variables["parameters"]["values"]["string"].append( # type: ignore
+            set_variables["parameters"]["values"]["string"].append(
                 {
                     "name": var_name,
                     "value": f"={{ $json.{source} }}",
