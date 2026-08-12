@@ -1,56 +1,56 @@
 {
-  "timestamp": "20260620-041653",
-  "total_errors": 9,
-  "success_count": 0,
-  "total_count": 10,
-  "success_rate": 0.0,
   "error_groups": {
     "Max Retries Error": [
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/cli.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/cli.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/tools/assets.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/tools/assets.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/tools/generation.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/tools/generation.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/cli.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/cli.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/tools/assets.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/tools/assets.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/tools/generation.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/tools/generation.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/cli.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/cli.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/cli.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/cli.py"
+        "type": "Max Retries Error"
       },
       {
-        "type": "Max Retries Error",
+        "file": "spline_mcp/cli.py",
         "message": "Failed after 3 attempts: Timed out after 90s; Timed out after 90s; Timed out after 90s",
-        "file": "spline_mcp/cli.py"
+        "type": "Max Retries Error"
       }
     ]
-  }
+  },
+  "success_count": 0,
+  "success_rate": 0.0,
+  "timestamp": "20260620-041653",
+  "total_count": 10,
+  "total_errors": 9
 }

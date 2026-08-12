@@ -31,7 +31,8 @@ class VanillaJSGenerator(CodeGenerator):
         websocket_code = self._build_websocket_code(opts)
 
         # Generate complete HTML
-        return (f"""<!DOCTYPE html>
+        return (
+            f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -89,7 +90,8 @@ class VanillaJSGenerator(CodeGenerator):
       }});
   </script>
 </body>
-</html>""").strip()
+</html>"""
+        ).strip()
 
     def _build_event_handlers_code(self, opts: GenerationOptions) -> str:
         """Build event handler registration code."""

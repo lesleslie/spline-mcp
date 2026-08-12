@@ -1,0 +1,322 @@
+{
+  "complexity": {
+    "Functions": [
+      {
+        "Name": "SplineSettings.load",
+        "FilePath": "spline_mcp/config.py",
+        "StartLine": 178,
+        "StartColumn": 4,
+        "EndLine": 247,
+        "Metrics": {
+          "Complexity": 14,
+          "Nodes": 34,
+          "Edges": 48,
+          "NestingDepth": 3,
+          "IfStatements": 10,
+          "LoopStatements": 1,
+          "ExceptionHandlers": 3,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "medium"
+      },
+      {
+        "Name": "_validate_json_content",
+        "FilePath": "spline_mcp/assets/validator.py",
+        "StartLine": 103,
+        "StartColumn": 0,
+        "EndLine": 146,
+        "Metrics": {
+          "Complexity": 9,
+          "Nodes": 21,
+          "Edges": 30,
+          "NestingDepth": 2,
+          "IfStatements": 7,
+          "LoopStatements": 1,
+          "ExceptionHandlers": 1,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "WebSocketClient._message_handler",
+        "FilePath": "spline_mcp/integrations/websocket.py",
+        "StartLine": 238,
+        "StartColumn": 4,
+        "EndLine": 284,
+        "Metrics": {
+          "Complexity": 9,
+          "Nodes": 22,
+          "Edges": 31,
+          "NestingDepth": 7,
+          "IfStatements": 5,
+          "LoopStatements": 2,
+          "ExceptionHandlers": 3,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "validate_scene_file",
+        "FilePath": "spline_mcp/assets/validator.py",
+        "StartLine": 33,
+        "StartColumn": 0,
+        "EndLine": 100,
+        "Metrics": {
+          "Complexity": 8,
+          "Nodes": 18,
+          "Edges": 26,
+          "NestingDepth": 4,
+          "IfStatements": 5,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 2,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "ReactGenerator._build_component_body",
+        "FilePath": "spline_mcp/generators/react.py",
+        "StartLine": 198,
+        "StartColumn": 4,
+        "EndLine": 272,
+        "Metrics": {
+          "Complexity": 8,
+          "Nodes": 16,
+          "Edges": 24,
+          "NestingDepth": 1,
+          "IfStatements": 7,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 0,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "generate",
+        "FilePath": "spline_mcp/cli.py",
+        "StartLine": 60,
+        "StartColumn": 0,
+        "EndLine": 128,
+        "Metrics": {
+          "Complexity": 7,
+          "Nodes": 16,
+          "Edges": 23,
+          "NestingDepth": 3,
+          "IfStatements": 6,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 0,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "NextJSGenerator._build_component_body",
+        "FilePath": "spline_mcp/generators/nextjs.py",
+        "StartLine": 159,
+        "StartColumn": 4,
+        "EndLine": 234,
+        "Metrics": {
+          "Complexity": 7,
+          "Nodes": 13,
+          "Edges": 20,
+          "NestingDepth": 1,
+          "IfStatements": 6,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 0,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "SplineAssetManager.extract_scene_id",
+        "FilePath": "spline_mcp/assets/manager.py",
+        "StartLine": 76,
+        "StartColumn": 4,
+        "EndLine": 98,
+        "Metrics": {
+          "Complexity": 5,
+          "Nodes": 8,
+          "Edges": 12,
+          "NestingDepth": 2,
+          "IfStatements": 3,
+          "LoopStatements": 1,
+          "ExceptionHandlers": 1,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "ReactGenerator._build_props_destructure",
+        "FilePath": "spline_mcp/generators/react.py",
+        "StartLine": 100,
+        "StartColumn": 4,
+        "EndLine": 114,
+        "Metrics": {
+          "Complexity": 5,
+          "Nodes": 10,
+          "Edges": 15,
+          "NestingDepth": 2,
+          "IfStatements": 4,
+          "LoopStatements": 1,
+          "ExceptionHandlers": 0,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "WebSocketClient.disconnect",
+        "FilePath": "spline_mcp/integrations/websocket.py",
+        "StartLine": 141,
+        "StartColumn": 4,
+        "EndLine": 155,
+        "Metrics": {
+          "Complexity": 5,
+          "Nodes": 13,
+          "Edges": 18,
+          "NestingDepth": 2,
+          "IfStatements": 2,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 2,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      },
+      {
+        "Name": "WebSocketClient.connect",
+        "FilePath": "spline_mcp/integrations/websocket.py",
+        "StartLine": 85,
+        "StartColumn": 4,
+        "EndLine": 139,
+        "Metrics": {
+          "Complexity": 5,
+          "Nodes": 9,
+          "Edges": 14,
+          "NestingDepth": 2,
+          "IfStatements": 1,
+          "LoopStatements": 0,
+          "ExceptionHandlers": 3,
+          "SwitchCases": 0
+        },
+        "RiskLevel": "low"
+      }
+    ],
+    "Summary": {
+      "TotalFunctions": 11,
+      "AverageComplexity": 7.454545454545454,
+      "MaxComplexity": 14,
+      "MinComplexity": 5,
+      "FilesAnalyzed": 23,
+      "LowRiskFunctions": 10,
+      "MediumRiskFunctions": 1,
+      "HighRiskFunctions": 0,
+      "ComplexityDistribution": {
+        "11-20": 1,
+        "2-5": 4,
+        "6-10": 6
+      }
+    },
+    "Warnings": null,
+    "Errors": null,
+    "GeneratedAt": "2026-08-12T15:04:31-07:00",
+    "Version": "1.5.0",
+    "Config": {
+      "exclude_patterns": [
+        "test_*.py",
+        "*_test.py"
+      ],
+      "include_patterns": [
+        "**/*.py"
+      ],
+      "low_threshold": 9,
+      "max_complexity": 0,
+      "medium_threshold": 19,
+      "min_complexity": 5,
+      "output_format": "json",
+      "recursive": false,
+      "show_details": false,
+      "sort_by": "complexity"
+    }
+  },
+  "dead_code": {
+    "files": null,
+    "summary": {
+      "total_files": 23,
+      "total_functions": 0,
+      "total_findings": 0,
+      "files_with_dead_code": 0,
+      "functions_with_dead_code": 0,
+      "critical_findings": 0,
+      "warning_findings": 0,
+      "info_findings": 0,
+      "findings_by_reason": {},
+      "total_blocks": 0,
+      "dead_blocks": 0,
+      "overall_dead_ratio": 0
+    },
+    "warnings": null,
+    "errors": null,
+    "generated_at": "2026-08-12T15:04:31-07:00",
+    "version": "1.5.0",
+    "config": {
+      "context_lines": 3,
+      "detect_after_break": true,
+      "detect_after_continue": true,
+      "detect_after_raise": true,
+      "detect_after_return": true,
+      "detect_unreachable_branches": true,
+      "exclude_patterns": [
+        "test_*.py",
+        "*_test.py"
+      ],
+      "ignore_patterns": [],
+      "include_patterns": [
+        "**/*.py"
+      ],
+      "min_severity": "warning",
+      "show_context": false,
+      "sort_by": "severity"
+    }
+  },
+  "summary": {
+    "total_files": 23,
+    "analyzed_files": 23,
+    "skipped_files": 0,
+    "complexity_enabled": true,
+    "dead_code_enabled": true,
+    "clone_enabled": false,
+    "cbo_enabled": false,
+    "deps_enabled": false,
+    "arch_enabled": false,
+    "deps_total_modules": 0,
+    "deps_modules_in_cycles": 0,
+    "deps_max_depth": 0,
+    "deps_main_sequence_deviation": 0,
+    "arch_compliance": 0,
+    "total_functions": 11,
+    "average_complexity": 7.454545454545454,
+    "high_complexity_count": 0,
+    "dead_code_count": 0,
+    "critical_dead_code": 0,
+    "warning_dead_code": 0,
+    "info_dead_code": 0,
+    "total_clones": 0,
+    "clone_pairs": 0,
+    "clone_groups": 0,
+    "code_duplication_percentage": 0,
+    "cbo_classes": 0,
+    "high_coupling_classes": 0,
+    "medium_coupling_classes": 0,
+    "average_coupling": 0,
+    "health_score": 92,
+    "grade": "A",
+    "complexity_score": 60,
+    "dead_code_score": 100,
+    "duplication_score": 100,
+    "coupling_score": 100,
+    "dependency_score": 100,
+    "architecture_score": 100
+  },
+  "generated_at": "2026-08-12T15:04:31.971372-07:00",
+  "duration_ms": 67,
+  "version": "1.5.0"
+}
