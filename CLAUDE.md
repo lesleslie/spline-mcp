@@ -67,14 +67,17 @@ spline_mcp/
 ├── cli.py               # Typer CLI commands
 ├── config.py            # Oneiric-based configuration
 ├── server.py            # FastMCP application
-├── client.py            # Spline API client
-└── tools/
-    ├── __init__.py      # Tool registration
-    ├── scenes.py        # Scene management (4 tools)
-    ├── objects.py       # Object CRUD (5 tools)
-    ├── materials.py     # Material system (3 tools)
-    ├── events.py        # Event management (3 tools)
-    └── runtime.py       # Runtime API (3 tools)
+├── client.py            # Spline API client (placeholder)
+├── assets/              # Asset management
+├── generators/          # Code generation (React, Vanilla, Next.js)
+├── integrations/        # External integrations
+└── tools/               # MCP tool definitions
+    ├── __init__.py      # Tool registration helpers
+    ├── generation.py    # Code generation tools (6)
+    ├── assets.py        # Asset management tools (5)
+    ├── helpers.py       # Utility tools (5)
+    ├── integration.py   # Integration tools (6)
+    └── docs.py          # Documentation tools (3)
 ```
 
 ## Key Patterns
@@ -84,7 +87,7 @@ spline_mcp/
 Settings loaded from:
 
 1. Default values in `SplineSettings`
-1. `settings/spline.yaml`
+1. `settings/spline-mcp.yaml`
 1. `settings/local.yaml` (gitignored)
 1. Environment variables `SPLINE_*`
 
@@ -108,15 +111,19 @@ async with SplineClient(api_key, base_url) as client:
 
 ## Configuration Files
 
-- `settings/spline.yaml` - Main configuration (committed)
+- `settings/spline-mcp.yaml` - Main configuration (committed)
 - `settings/local.yaml` - Local overrides (gitignored)
 - `.env` - Environment secrets (gitignored)
 
 ## API Reference
 
-See `spline_mcp/client.py` for the full SplineClient implementation with typed models:
+The Spline scene/object/material/event abstractions live alongside the runtime
+helpers, not in a single client class:
 
-- `SplineScene` - Scene representation
-- `SplineObject` - 3D object model
-- `SplineMaterial` - Material definition
-- `SplineEvent` - Event configuration
+- `spline_mcp/assets/manager.py` — `SplineAssetManager`, `SplineSceneMetadata` (download, cache, list)
+- `spline_mcp/assets/validator.py` — `validate_scene_file` (scene-file integrity checks)
+- `spline_mcp/generators/base.py` — `SplineEventType`, framework-agnostic generation types
+- `spline_mcp/tools/*.py` — public MCP tool surface (see Architecture above)
+
+`spline_mcp/client.py` is a thin placeholder; reach for the modules above
+when adding new scene/object/material behavior.

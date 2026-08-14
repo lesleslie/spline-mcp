@@ -2,7 +2,7 @@
 
 [![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
 [![Runtime: oneiric](https://img.shields.io/badge/runtime-oneiric-6e5494)](https://github.com/lesleslie/oneiric)
-[![Framework: FastMCP](https://img.shields.io/badge/framework-FastMCP-0ea5e9)](https://github.com/jlowin/fastmcp)
+[![Framework: FastMCP](https://img.shields.io/badge/framework-FastMCP-0ea5e9)](https://github.com/PrefectHQ/fastmcp)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
 
@@ -97,6 +97,14 @@ spline-mcp serve --http --port 3048
 | `trigger_n8n_webhook` | Trigger n8n webhook |
 | `get_integration_status` | Status of all integrations |
 
+### Documentation
+
+| Tool | Description |
+|------|-------------|
+| `get_runtime_api_docs` | Get documentation for the @splinetool/runtime API by topic |
+| `get_installation_guide` | Get installation guide for the Spline runtime |
+| `get_troubleshooting_guide` | Get troubleshooting guide for common Spline issues |
+
 ## Configuration
 
 Set via environment variables with `SPLINE_` prefix:
@@ -106,14 +114,23 @@ Set via environment variables with `SPLINE_` prefix:
 | `SPLINE_DEFAULT_FRAMEWORK` | `react` | Default framework (react/vanilla/nextjs) |
 | `SPLINE_TYPESCRIPT` | `true` | Generate TypeScript code |
 | `SPLINE_LAZY_LOAD` | `true` | Use lazy loading with Suspense |
+| `SPLINE_SSR_PLACEHOLDER` | `false` | Generate SSR placeholder for Next.js |
+| `SPLINE_INDENT_SPACES` | `2` | Indentation spaces for generated code (2-8) |
+| `SPLINE_SEMICOLONS` | `true` | Use semicolons in generated JavaScript |
 | `SPLINE_CACHE_DIR` | `~/.spline-mcp/cache` | Cache directory |
 | `SPLINE_MAX_CACHE_SIZE_MB` | `500` | Maximum cache size |
+| `SPLINE_AUTO_VALIDATE` | `true` | Automatically validate downloaded scenes |
 | `SPLINE_WEBSOCKET_ENABLED` | `true` | Enable WebSocket integration |
 | `SPLINE_WEBSOCKET_URL` | `ws://localhost:8690` | Mahavishnu WebSocket URL |
+| `SPLINE_WEBSOCKET_AUTO_RECONNECT` | `true` | Automatically reconnect on disconnect |
 | `SPLINE_N8N_ENABLED` | `true` | Enable n8n integration |
 | `SPLINE_N8N_URL` | `http://localhost:3044` | n8n server URL |
+| `SPLINE_N8N_API_KEY` | _(unset)_ | n8n API key (required when n8n auth enabled) |
+| `SPLINE_ENABLE_HTTP_TRANSPORT` | `false` | Enable HTTP transport |
+| `SPLINE_HTTP_HOST` | `127.0.0.1` | HTTP server host |
 | `SPLINE_HTTP_PORT` | `3048` | HTTP server port |
 | `SPLINE_LOG_LEVEL` | `INFO` | Logging level |
+| `SPLINE_LOG_JSON` | `true` | Use JSON logging format |
 
 ## Generated Code Examples
 
