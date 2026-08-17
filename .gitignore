@@ -62,9 +62,34 @@ uv.lock
 # Backup Files (added by gitignore audit)
 # ============================================================================
 *.backup
+*.backup.*
 *.backup.json
 *.bak
+*.bak2
 /.backups/
 /.backup/
 .backups/
 .backup/
+
+# Crackerjack runtime artifacts (added 2026-08-17 bodai cleanup)
+# ============================================================================
+.crackerjack/
+.crackerjack/outputs/
+.crackerjack-state/
+.crackerjack-hooks-updated/
+.crackerjack-mcp/
+
+# Coverage outputs
+# ============================================================================
+.coverage*
+coverage.json
+
+# Python bytecode variants (defense-in-depth; *.py[cod] above covers most cases)
+# ============================================================================
+*.pyc
+*.pyo
+*.pyd
+
+# Example MCP config (safe-to-share)
+# ============================================================================
+example.mcp.json
