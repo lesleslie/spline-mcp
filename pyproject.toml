@@ -20,7 +20,7 @@ classifiers = [
 ]
 dependencies = [
     "fastmcp>=2.12.3",
-    "mcp-common>=0.16.4",
+    "mcp-common>=0.18.0",
     "oneiric>=0.16.0",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.0.0",

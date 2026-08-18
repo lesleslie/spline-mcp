@@ -7,16 +7,11 @@ from typing import Any
 from mcp_common.fastmcp import FastMCP
 from mcp_common.health import register_http_health_route
 from mcp_common.server.telemetry import FastMCPOpenTelemetryMiddleware
+from mcp_common.tools.dispatch import apply_tool_profile
 
 from spline_mcp import __version__
 from spline_mcp.config import get_logger_instance, get_settings, setup_logging
-from spline_mcp.tools import (
-    register_asset_tools,
-    register_docs_tools,
-    register_generation_tools,
-    register_helper_tools,
-    register_integration_tools,
-)
+from spline_mcp.tools.profiles import PROFILE_REGISTRATIONS, register_all_tool_groups
 
 logger = get_logger_instance("spline-mcp.server")
 
@@ -58,46 +53,27 @@ def create_app() -> FastMCP:
     # OpenTelemetry middleware (Bodai convention)
     _attach_otel_middleware(app)
 
-    # Register tool groups
-    register_generation_tools(app)
-    register_asset_tools(app)
-    register_helper_tools(app)
-    register_integration_tools(app)
-    register_docs_tools(app)
+    # Apply tool profile dispatch (SPLINE_TOOL_PROFILE env var).
+    #
+    # Replaces the previous direct register_*_tools(app) calls. The W0
+    # helper from mcp-common 0.18.0+ dispatches by group name and always
+    # registers the `discover_tools` meta-tool. The default (no env var)
+    # remains FULL = all 25 tools — the previous behavior is preserved.
+    #
+    # The sync ``apply_tool_profile`` wrapper from mcp-common handles the
+    # no-running-loop case via ``asyncio.run``; it raises ``RuntimeError``
+    # when called from within a running event loop (forcing async callers to
+    # use ``_apply_tool_profile`` instead). At module import time of this
+    # create_app() no event loop is running, so this works in normal CLI /
+    # HTTP-server startup paths.
+    from spline_mcp.tools.profiles import _build_registration_map
 
-    # Log registered tools
-    logger.info(
-        "Tools registered",
-        generation=[
-            "generate_react_component",
-            "generate_vanilla_js",
-            "generate_nextjs_component",
-            "generate_event_handler",
-            "generate_variable_binding",
-            "generate_full_integration",
-        ],
-        assets=[
-            "download_scene",
-            "validate_scene",
-            "list_cached_scenes",
-            "clear_cache",
-            "get_cache_stats",
-        ],
-        helpers=[
-            "build_export_url",
-            "parse_scene_url",
-            "list_event_types",
-            "get_event_documentation",
-            "generate_snippet",
-        ],
-        integration=[
-            "get_websocket_status",
-            "subscribe_to_channel",
-            "get_n8n_status",
-            "generate_n8n_workflow",
-            "trigger_n8n_webhook",
-            "get_integration_status",
-        ],
+    apply_tool_profile(
+        app,
+        profile_env_var="SPLINE_TOOL_PROFILE",
+        registrations=PROFILE_REGISTRATIONS,
+        registration_map=_build_registration_map(),
+        register_all_fn=register_all_tool_groups,
     )
 
     return app

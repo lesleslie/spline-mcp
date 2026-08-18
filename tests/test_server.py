@@ -39,7 +39,13 @@ class TestServerCreation:
         assert app.name == APP_NAME
 
     def test_create_app_registers_tools(self) -> None:
-        """Test that create_app registers all tools."""
+        """Test that create_app dispatches via apply_tool_profile.
+
+        The W2b.3 refactor moved the 5 register_*_tools() calls into
+        ``spline_mcp.tools.profiles.register_all_tool_groups``; ``create_app``
+        now invokes the W0 helper ``apply_tool_profile`` which delegates the
+        per-group dispatch. We mock the helper to confirm it is wired.
+        """
         with patch("spline_mcp.server.get_settings") as mock_settings:
             settings = MagicMock()
             settings.default_framework = "react"
@@ -48,24 +54,17 @@ class TestServerCreation:
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
-                with patch("spline_mcp.server.register_generation_tools") as mock_gen:
-                    with patch("spline_mcp.server.register_asset_tools") as mock_asset:
-                        with patch(
-                            "spline_mcp.server.register_helper_tools"
-                        ) as mock_helper:
-                            with patch(
-                                "spline_mcp.server.register_integration_tools"
-                            ) as mock_int:
-                                with patch(
-                                    "spline_mcp.server.register_docs_tools"
-                                ) as mock_docs:
-                                    app = create_app()
+                with patch(
+                    "spline_mcp.server.apply_tool_profile"
+                ) as mock_apply:
+                    app = create_app()
 
-                                    mock_gen.assert_called_once()
-                                    mock_asset.assert_called_once()
-                                    mock_helper.assert_called_once()
-                                    mock_int.assert_called_once()
-                                    mock_docs.assert_called_once()
+        mock_apply.assert_called_once()
+        kwargs = mock_apply.call_args.kwargs
+        assert kwargs["profile_env_var"] == "SPLINE_TOOL_PROFILE"
+        assert "registrations" in kwargs
+        assert "registration_map" in kwargs
+        assert "register_all_fn" in kwargs
 
 
 class TestGetApp:

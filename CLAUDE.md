@@ -102,6 +102,21 @@ def register_scene_tools(app: FastMCP) -> None:
         # Implementation
 ```
 
+### Tool Profile System
+
+`create_app()` dispatches the 5 `register_*_tools()` groups via the W0
+helper from `mcp-common>=0.18.0`, gated by `SPLINE_TOOL_PROFILE`:
+
+| Profile | Groups | Tool count |
+|-----------|-----------------------------------------------------|------------|
+| MINIMAL | (none) | 0 + discover_tools |
+| STANDARD | assets, generation, helpers, docs | 19 + discover_tools |
+| FULL | assets, generation, helpers, docs, integration | 25 + discover_tools |
+
+Default (unset) is FULL. See `docs/architecture/tool-profile-rationale.md`
+for the mapping rationale and `spline_mcp/tools/profiles.py` for the
+dispatch surface.
+
 ### Async Client Pattern
 
 ```python
