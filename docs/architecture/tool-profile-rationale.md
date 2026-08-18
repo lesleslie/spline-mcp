@@ -18,11 +18,11 @@ across 5 files (`spline_mcp/tools/{generation,assets,helpers,docs,integration}.p
 
 Three-tier profile mapping:
 
-| Profile   | Groups registered                              | Tool count |
+| Profile | Groups registered | Tool count |
 |-----------|------------------------------------------------|------------|
-| MINIMAL   | (none)                                         | 0 + discover_tools |
-| STANDARD  | assets, generation, helpers, docs              | 19 + discover_tools |
-| FULL      | assets, generation, helpers, docs, integration | 25 + discover_tools |
+| MINIMAL | (none) | 0 + discover_tools |
+| STANDARD | assets, generation, helpers, docs | 19 + discover_tools |
+| FULL | assets, generation, helpers, docs, integration | 25 + discover_tools |
 
 Rationale per tier:
 
@@ -41,19 +41,72 @@ profiles.
 
 ## Wiring
 
-`create_app()` in `spline_mcp/server.py` replaces the 5 explicit
-`register_*_tools(app)` calls with a single `apply_tool_profile(app, ...)`
-invocation passing:
+`create_app()` in `spline_mcp/server.py` is **async** and delegates
+the tool profile dispatch to `apply_spline_tool_profile(app)` (the
+async wrapper) before returning the FastMCP app:
+
+```python
+async def create_app() -> FastMCP:
+    settings = get_settings()
+    setup_logging(settings)
+    ...
+    app = FastMCP(name=APP_NAME, version=APP_VERSION)
+    register_http_health_route(app, ...)
+    _attach_otel_middleware(app)
+    await apply_spline_tool_profile(app)   # async helper
+    return app
+
+
+def get_app() -> FastMCP:
+    global _app
+    if _app is None:
+        _app = asyncio.run(create_app())  # sync → async bridge
+    return _app
+```
+
+The async dispatch is required because the W0 helper
+(`mcp_common.tools.dispatch._apply_tool_profile`) is async. Per the
+W1.4 + W2a + W2b.1 lessons, the sync wrapper `apply_tool_profile()` raises
+`RuntimeError` when called from inside a running event loop, so the
+async path is the only correct path for both production and any
+integration that runs under an asyncio loop.
+
+`apply_spline_tool_profile` (defined in `spline_mcp/tools/profiles.py`)
+forwards to `_apply_tool_profile` with:
 
 - `profile_env_var="SPLINE_TOOL_PROFILE"`
-- `registrations=PROFILE_REGISTRATIONS` from `spline_mcp/tools/profiles.py`
+- `registrations=PROFILE_REGISTRATIONS` (from `spline_mcp/tools/profiles.py`)
 - `registration_map=_build_registration_map()` (lazy import)
 - `register_all_fn=register_all_tool_groups`
+- `mandatory_groups=set()` (no MCP health tools — see below)
+- `essential_tool_names=set()` (no MCP health tools — see below)
 
-The sync `apply_tool_profile` wrapper calls `asyncio.run()` internally,
-which works at module import time (no event loop running). Tests that
-need to drive the dispatch from an async context use the async
-`apply_spline_tool_profile` helper defined in `spline_mcp/tools/profiles.py`.
+## MANDATORY_TOOLS invariant
+
+`mcp-common` defines `MANDATORY_GROUPS` (default empty) and
+`MANDATORY_TOOLS` (default empty). The W0 helper's `_apply_tool_profile`
+performs a subset check `MANDATORY_TOOLS ⊆ registered_tools` after
+dispatch.
+
+spline-mcp has **no MCP-registered health tools** — only the `/healthz`
+HTTP route via `mcp_common.health.register_http_health_route` (which
+registers a Starlette endpoint, not an MCP tool). The `MANDATORY_TOOLS`
+invariant is therefore vacuously satisfied.
+
+The explicit opt-out is documented in `apply_spline_tool_profile`:
+
+```python
+await _apply_tool_profile(
+    server,
+    ...
+    mandatory_groups=set(),          # explicit opt-out
+    essential_tool_names=set(),     # explicit opt-out
+)
+```
+
+If spline-mcp adds MCP health tools in the future, add them to the
+registration map and pass them via `mandatory_groups` + `essential_tool_names`
+to enforce the invariant.
 
 ## Migration
 
@@ -67,16 +120,10 @@ register_integration_tools(app)
 register_docs_tools(app)
 ```
 
-Post-refactor (1 dispatch call):
+Post-refactor (1 async dispatch call):
 
 ```python
-apply_tool_profile(
-    app,
-    profile_env_var="SPLINE_TOOL_PROFILE",
-    registrations=PROFILE_REGISTRATIONS,
-    registration_map=_build_registration_map(),
-    register_all_fn=register_all_tool_groups,
-)
+await apply_spline_tool_profile(app)
 ```
 
 The `Tools registered` log line was removed — the W0 helper logs
@@ -94,19 +141,27 @@ and is independent of the tool registry — no gating needed.
 
 ## Tests
 
-`tests/test_tool_profile.py` adds 11 wiring tests:
+`tests/test_tool_profile.py` adds 15 wiring tests:
 
-- 8 AST-level pinning tests (profiles.py structure, server.py wiring,
-  pyproject pin, rationale doc)
+- 10 AST-level pinning tests (profiles.py structure, server.py wiring,
+  pyproject pin, rationale doc, sync-wrapper prohibition, env-var
+  presence in profiles.py)
 - 1 inline subset parity test (REGISTRATION_MAP keys cover all profile
   references)
-- 3 behavioral parity tests (FULL=26, STANDARD=20, MINIMAL=1) using
-  `monkeypatch.setenv("SPLINE_TOOL_PROFILE", ...)` for env isolation
+- 1 MANDATORY_TOOLS invariant test (vacuously satisfied; explicit opt-out
+  is asserted via `inspect.getsource`)
+- 3 behavioral parity tests (full / standard / minimal coverage)
 
-`tests/test_server.py::TestServerCreation::test_create_app_registers_tools`
-was updated to mock `apply_tool_profile` instead of the 5 individual
-register_*_tools functions (the latter no longer exist in
-`spline_mcp.server`).
+The round 1 review fix is verified by:
+
+- `tests/test_tool_profile.py::test_server_wires_apply_spline_tool_profile`
+  — asserts `await apply_spline_tool_profile(app)` is in server.py
+- `tests/test_tool_profile.py::test_server_does_not_use_sync_wrapper` —
+  asserts the sync wrapper is NOT used in server.py
+- `tests/test_server.py::TestServerCreation::test_create_app_registers_tools`
+  — real production-path test that exercises the async dispatch and
+  verifies the actual tool set. Does NOT mock the dispatch helper.
+  This test would fail with `RuntimeError` if the sync wrapper were used.
 
 ## Notes for downstream consumers
 
@@ -114,3 +169,6 @@ register_*_tools functions (the latter no longer exist in
 - The `discover_tools` meta-tool is now always registered.
 - Operators that previously relied on all 25 tools being exposed should
   leave `SPLINE_TOOL_PROFILE` unset (defaults to FULL).
+- `create_app()` is now async. Sync callers (e.g. `get_app()`) bridge
+  via `asyncio.run`. Async callers (e.g. integration tests) can directly
+  `await create_app()`.

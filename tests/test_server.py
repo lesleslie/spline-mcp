@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,6 +10,16 @@ from fastmcp import FastMCP
 from mcp_common.server.telemetry import FastMCPOpenTelemetryMiddleware
 
 from spline_mcp.server import APP_NAME, APP_VERSION, create_app, get_app
+
+
+def _run_create_app() -> FastMCP:
+    """Helper: invoke the async create_app() from a sync test.
+
+    ``create_app`` is async because the W0 helper (mcp-common 0.18.0+) is
+    async. Test contexts that aren't pytest-asyncio should call this
+    helper rather than awaiting directly.
+    """
+    return asyncio.run(create_app())
 
 
 class TestServerCreation:
@@ -33,18 +44,21 @@ class TestServerCreation:
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
-                app = create_app()
+                app = _run_create_app()
 
         assert app is not None
         assert app.name == APP_NAME
 
     def test_create_app_registers_tools(self) -> None:
-        """Test that create_app dispatches via apply_tool_profile.
+        """Real production-path test: create_app() must register all 25 tools + discover_tools.
 
-        The W2b.3 refactor moved the 5 register_*_tools() calls into
-        ``spline_mcp.tools.profiles.register_all_tool_groups``; ``create_app``
-        now invokes the W0 helper ``apply_tool_profile`` which delegates the
-        per-group dispatch. We mock the helper to confirm it is wired.
+        Per the W2b.3 review lesson: tests that mock the dispatch helper
+        cannot verify the SUT does the right thing. This test exercises
+        the real async wiring (``create_app`` -> ``apply_spline_tool_profile``
+        -> ``_apply_tool_profile``) and verifies the resulting tool set.
+
+        Will fail (RuntimeError) if the sync ``apply_tool_profile`` wrapper
+        is used instead of the async helper.
         """
         with patch("spline_mcp.server.get_settings") as mock_settings:
             settings = MagicMock()
@@ -54,17 +68,48 @@ class TestServerCreation:
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
-                with patch(
-                    "spline_mcp.server.apply_tool_profile"
-                ) as mock_apply:
-                    app = create_app()
+                app = _run_create_app()
 
-        mock_apply.assert_called_once()
-        kwargs = mock_apply.call_args.kwargs
-        assert kwargs["profile_env_var"] == "SPLINE_TOOL_PROFILE"
-        assert "registrations" in kwargs
-        assert "registration_map" in kwargs
-        assert "register_all_fn" in kwargs
+        # Verify the actual tool set via the async public API.
+        names = asyncio.run(_list_tool_names(app))
+        expected_spline = {
+            "generate_react_component",
+            "generate_vanilla_js",
+            "generate_nextjs_component",
+            "generate_event_handler",
+            "generate_variable_binding",
+            "generate_full_integration",
+            "download_scene",
+            "validate_scene",
+            "list_cached_scenes",
+            "clear_cache",
+            "get_cache_stats",
+            "build_export_url",
+            "parse_scene_url",
+            "list_event_types",
+            "get_event_documentation",
+            "generate_snippet",
+            "get_websocket_status",
+            "subscribe_to_channel",
+            "get_n8n_status",
+            "generate_n8n_workflow",
+            "trigger_n8n_webhook",
+            "get_integration_status",
+            "get_runtime_api_docs",
+            "get_installation_guide",
+            "get_troubleshooting_guide",
+        }
+        assert expected_spline.issubset(names), (
+            f"create_app() missing tools: {sorted(expected_spline - names)}"
+        )
+        assert "discover_tools" in names, (
+            "W0 helper must register discover_tools meta-tool"
+        )
+
+
+async def _list_tool_names(app: FastMCP) -> set[str]:
+    """Async helper: list the names of tools registered on ``app``."""
+    return {t.name for t in await app.list_tools()}
 
 
 class TestGetApp:
@@ -174,7 +219,7 @@ class TestOneiricConvention:
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
-                app = create_app()
+                app = _run_create_app()
 
         # FastMCP stores middleware in _middleware (private) or middleware
         # attribute depending on version. We verify by checking at least one
@@ -223,7 +268,7 @@ class TestOneiricConvention:
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
-                app = create_app()
+                app = _run_create_app()
 
         assert isinstance(app, MCPCommonFastMCP)
         assert isinstance(app, FastMCP)  # and the upstream class

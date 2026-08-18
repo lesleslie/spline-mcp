@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path("/Users/les/Projects/spline-mcp")
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_profiles_py_exists() -> None:
@@ -66,49 +66,87 @@ def test_profiles_py_defines_register_all_tool_groups() -> None:
 
 
 def test_server_uses_spline_tool_profile_env_var() -> None:
-    """server.py must reference SPLINE_TOOL_PROFILE env var (passed to the W0 helper)."""
-    server = REPO_ROOT / "spline_mcp" / "server.py"
-    tree = ast.parse(server.read_text())
+    """The SPLINE_TOOL_PROFILE env var must be wired through the dispatch path.
+
+    In the production code, the env var is passed inside profiles.py
+    via ``apply_spline_tool_profile -> _apply_tool_profile``. server.py
+    imports the async wrapper but doesn't need to know the env var
+    name. So we verify the env var is referenced in profiles.py.
+    """
+    profiles = REPO_ROOT / "spline_mcp" / "tools" / "profiles.py"
+    tree = ast.parse(profiles.read_text())
     found = any(
         isinstance(node, ast.Constant) and node.value == "SPLINE_TOOL_PROFILE"
         for node in ast.walk(tree)
     )
-    assert found, "SPLINE_TOOL_PROFILE not referenced in server.py"
+    assert found, "SPLINE_TOOL_PROFILE not referenced in profiles.py"
 
 
-def test_server_wires_apply_tool_profile() -> None:
-    """server.py must call ``apply_tool_profile`` (the W0 helper entrypoint)."""
-    server = REPO_ROOT / "spline_mcp" / "server.py"
-    tree = ast.parse(server.read_text())
-    found = any(
-        isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Name)
-        and node.func.id == "apply_tool_profile"
-        for node in ast.walk(tree)
-    )
-    assert found, "apply_tool_profile() call not found in server.py"
+def test_server_wires_apply_spline_tool_profile() -> None:
+    """server.py must ``await apply_spline_tool_profile(app)`` (the async wrapper).
 
-
-def test_server_wires_tool_profile_env_var() -> None:
-    """The apply_tool_profile call must pass ``profile_env_var="SPLINE_TOOL_PROFILE"``."""
+    Per the W1.4 + W2a + W2b.1 lessons: the production path must use the
+    async helper, NOT the sync wrapper. The sync wrapper raises
+    ``RuntimeError`` when called from inside a running event loop, which
+    would break any test that runs ``create_app`` under an async context.
+    """
     server = REPO_ROOT / "spline_mcp" / "server.py"
     tree = ast.parse(server.read_text())
     found = False
     for node in ast.walk(tree):
-        if not isinstance(node, ast.Call):
+        if not isinstance(node, ast.Await):
+            continue
+        if not isinstance(node.value, ast.Call):
             continue
         if not (
-            isinstance(node.func, ast.Name) and node.func.id == "apply_tool_profile"
+            isinstance(node.value.func, ast.Name)
+            and node.value.func.id == "apply_spline_tool_profile"
         ):
             continue
-        for kw in node.keywords:
-            if kw.arg == "profile_env_var":
-                if (
-                    isinstance(kw.value, ast.Constant)
-                    and kw.value.value == "SPLINE_TOOL_PROFILE"
-                ):
-                    found = True
-    assert found, "apply_tool_profile call must pass profile_env_var='SPLINE_TOOL_PROFILE'"
+        found = True
+        break
+    assert found, "await apply_spline_tool_profile(app) not found in server.py"
+
+
+def test_server_does_not_use_sync_wrapper() -> None:
+    """server.py must NOT call the sync ``apply_tool_profile`` wrapper.
+
+    This is the W2b.3 review fix: round 1 used the sync wrapper which
+    raises RuntimeError in async contexts. The production path must use
+    the async ``apply_spline_tool_profile`` defined in profiles.py.
+    """
+    server = REPO_ROOT / "spline_mcp" / "server.py"
+    tree = ast.parse(server.read_text())
+    sync_call = False
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        if isinstance(node.func, ast.Name) and node.func.id == "apply_tool_profile":
+            sync_call = True
+    assert not sync_call, (
+        "server.py must NOT call the sync apply_tool_profile() wrapper "
+        "(raises RuntimeError in event loops). Use apply_spline_tool_profile "
+        "instead."
+    )
+
+
+def test_server_wires_tool_profile_env_var() -> None:
+    """The dispatch path must pass ``profile_env_var="SPLINE_TOOL_PROFILE"``.
+
+    The env var is passed by ``apply_spline_tool_profile`` to
+    ``_apply_tool_profile`` inside profiles.py (lazy import). Verify the
+    constant appears in profiles.py.
+    """
+    profiles = REPO_ROOT / "spline_mcp" / "tools" / "profiles.py"
+    tree = ast.parse(profiles.read_text())
+    found = False
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Constant):
+            continue
+        if node.value == "SPLINE_TOOL_PROFILE":
+            found = True
+            break
+    assert found, "SPLINE_TOOL_PROFILE not referenced in profiles.py"
 
 
 def test_pyproject_bumps_mcp_common_to_0_18() -> None:
@@ -145,6 +183,51 @@ def test_profile_registrations_subset_of_map() -> None:
                 f"{profile.value} references group {group!r} but REGISTRATION_MAP "
                 f"is missing it; keys={sorted(mapping)}"
             )
+
+
+def test_mandatory_tools_invariant() -> None:
+    """MANDATORY_TOOLS ⊆ REGISTRATION_MAP.keys() must hold.
+
+    spline-mcp has NO MCP-registered health tools (only the /healthz HTTP
+    route via mcp_common.health), so the MANDATORY_TOOLS invariant is
+    vacuously satisfied (mcp-common's default MANDATORY_TOOLS is empty).
+
+    This test pins the explicit opt-out so the relationship cannot drift
+    silently:
+    - MANDATORY_TOOLS from mcp-common is empty by default
+    - apply_spline_tool_profile passes mandatory_groups=set()
+    - apply_spline_tool_profile passes essential_tool_names=set()
+
+    If any of these change, this test must be updated to reflect the
+    new invariant (either add the health tools to REGISTRATION_MAP or
+    document the opt-out in the rationale doc).
+    """
+    from mcp_common.tools.profiles import MANDATORY_TOOLS
+
+    from spline_mcp.tools.profiles import (
+        _build_registration_map,
+        apply_spline_tool_profile,
+    )
+
+    mapping = _build_registration_map()
+    # Vacuous: MANDATORY_TOOLS empty, so any subset holds
+    assert MANDATORY_TOOLS.issubset(set(mapping.keys())), (
+        f"MANDATORY_TOOLS {sorted(MANDATORY_TOOLS)} not in REGISTRATION_MAP "
+        f"keys {sorted(mapping.keys())}"
+    )
+
+    # Verify the explicit opt-out is documented in the implementation
+    import inspect
+
+    source = inspect.getsource(apply_spline_tool_profile)
+    assert "mandatory_groups=set()" in source, (
+        "apply_spline_tool_profile must pass mandatory_groups=set() to "
+        "explicitly opt out of the MANDATORY_GROUPS invariant"
+    )
+    assert "essential_tool_names=set()" in source, (
+        "apply_spline_tool_profile must pass essential_tool_names=set() to "
+        "explicitly opt out of the MANDATORY_TOOLS subset check"
+    )
 
 
 @pytest.mark.asyncio

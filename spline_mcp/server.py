@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from mcp_common.fastmcp import FastMCP
 from mcp_common.health import register_http_health_route
 from mcp_common.server.telemetry import FastMCPOpenTelemetryMiddleware
-from mcp_common.tools.dispatch import apply_tool_profile
 
 from spline_mcp import __version__
 from spline_mcp.config import get_logger_instance, get_settings, setup_logging
-from spline_mcp.tools.profiles import PROFILE_REGISTRATIONS, register_all_tool_groups
+from spline_mcp.tools.profiles import apply_spline_tool_profile
 
 logger = get_logger_instance("spline-mcp.server")
 
@@ -28,8 +28,19 @@ def _attach_otel_middleware(app: FastMCP) -> None:
     app.add_middleware(middleware)
 
 
-def create_app() -> FastMCP:
-    """Create and configure the FastMCP application."""
+async def create_app() -> FastMCP:
+    """Create and configure the FastMCP application (async).
+
+    Tool profile dispatch is async because the W0 helper from
+    mcp-common 0.18.0 (``_apply_tool_profile``) is async. Per the W1.4
+    + W2a + W2b.1 lessons, the sync ``apply_tool_profile`` wrapper
+    raises ``RuntimeError`` when called from inside a running event
+    loop, so the async path is the only correct path for both production
+    code and any integration that runs inside an asyncio loop.
+
+    Callers from sync contexts (CLI startup, ``get_app``) wrap with
+    ``asyncio.run(create_app())``.
+    """
     settings = get_settings()
     setup_logging(settings)
 
@@ -59,22 +70,7 @@ def create_app() -> FastMCP:
     # helper from mcp-common 0.18.0+ dispatches by group name and always
     # registers the `discover_tools` meta-tool. The default (no env var)
     # remains FULL = all 25 tools — the previous behavior is preserved.
-    #
-    # The sync ``apply_tool_profile`` wrapper from mcp-common handles the
-    # no-running-loop case via ``asyncio.run``; it raises ``RuntimeError``
-    # when called from within a running event loop (forcing async callers to
-    # use ``_apply_tool_profile`` instead). At module import time of this
-    # create_app() no event loop is running, so this works in normal CLI /
-    # HTTP-server startup paths.
-    from spline_mcp.tools.profiles import _build_registration_map
-
-    apply_tool_profile(
-        app,
-        profile_env_var="SPLINE_TOOL_PROFILE",
-        registrations=PROFILE_REGISTRATIONS,
-        registration_map=_build_registration_map(),
-        register_all_fn=register_all_tool_groups,
-    )
+    await apply_spline_tool_profile(app)
 
     return app
 
@@ -83,10 +79,15 @@ _app: FastMCP | None = None
 
 
 def get_app() -> FastMCP:
-    """Get the singleton FastMCP application."""
+    """Get the singleton FastMCP application (sync wrapper).
+
+    Bridges to the async ``create_app`` via ``asyncio.run``. This works
+    because the FastMCP app-building phase does not require a running
+    event loop — only the tool profile dispatch needs an async context.
+    """
     global _app
     if _app is None:
-        _app = create_app()
+        _app = asyncio.run(create_app())
     return _app
 
 
