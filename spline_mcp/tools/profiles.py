@@ -113,8 +113,10 @@ async def apply_spline_tool_profile(server: FastMCP) -> None:
     """Apply the SPLINE_TOOL_PROFILE dispatch to ``server`` at startup.
 
     Async because the W0 helper is async; called from
-    ``spline_mcp.server.create_app`` via the sync ``apply_tool_profile``
-    wrapper at module import time (no event loop running).
+    ``spline_mcp.server.create_app`` via
+    ``await apply_spline_tool_profile(app)``. The sync ``apply_tool_profile``
+    wrapper raises RuntimeError in any async context, so this async path
+    is the only correct entry point.
     """
     from mcp_common.tools.dispatch import _apply_tool_profile
 
