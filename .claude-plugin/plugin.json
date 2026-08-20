@@ -1,0 +1,17 @@
+{
+  "author": {
+    "name": "Bodai"
+  },
+  "description": "Bodai plugin for the spline-mcp 3D scene code generation and asset management server.",
+  "keywords": [
+    "bodai",
+    "mcp",
+    "spline",
+    "3d",
+    "code-generation"
+  ],
+  "mcpServers": "./.mcp.json",
+  "name": "spline",
+  "schema_version": "1.0.0",
+  "version": "0.1.0"
+}

@@ -210,6 +210,10 @@ Part of the **Bodai Ecosystem**:
 | Crackerjack | Inspector | 8676 |
 | **spline-mcp** | 3D Orchestrator | 3048 |
 
+## Installation via Bodai Marketplace
+
+This repo ships a Bodai Claude Code plugin manifest (`.claude-plugin/plugin.json`) plus a colocated `.mcp.json` and three slash commands in `commands/`. To install via the Bodai marketplace, first register the marketplace with Claude Code, then install the plugin by name. Once installed, the slash commands `/spline-generate`, `/spline-assets`, and `/spline-websocket` become available alongside the `mcp__spline__*` tools. Make sure the spline-mcp HTTP server is running on its configured port before invoking the slash commands.
+
 ## License
 
 BSD-3-Clause
