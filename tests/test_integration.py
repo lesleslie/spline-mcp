@@ -52,7 +52,7 @@ class TestWebSocketClient:
         client = WebSocketClient(url="ws://localhost:8690")
 
         handler = MagicMock()
-        unsubscribe = await client.subscribe("test-channel", handler)
+        await client.subscribe("test-channel", handler)
 
         # Should still register subscriber
         assert "test-channel" in client._subscribers

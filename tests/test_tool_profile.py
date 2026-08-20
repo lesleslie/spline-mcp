@@ -34,10 +34,13 @@ def test_profiles_py_defines_profile_registrations() -> None:
         ):
             found = True
             break
-        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
-            if node.target.id == "PROFILE_REGISTRATIONS":
-                found = True
-                break
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == "PROFILE_REGISTRATIONS"
+        ):
+            found = True
+            break
     assert found, "PROFILE_REGISTRATIONS not defined in profiles.py"
 
 
@@ -170,9 +173,8 @@ def test_profile_registrations_subset_of_map() -> None:
     Inline assertion (per W2b.1 lesson: prefer inline ``assert set == {...}``
     over golden fixtures for parity tests).
     """
-    from mcp_common.tools import ToolProfile
 
-    from spline_mcp.tools.profiles import _build_registration_map, PROFILE_REGISTRATIONS
+    from spline_mcp.tools.profiles import PROFILE_REGISTRATIONS, _build_registration_map
 
     mapping = _build_registration_map()
     for profile, regs in PROFILE_REGISTRATIONS.items():
