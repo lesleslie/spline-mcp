@@ -101,6 +101,23 @@ skips = ["B101"]
 [tool.uv.sources]
 mcp-common = { path = "/Users/les/Projects/mcp-common", editable = true }
 
+[tool.creosote]
+paths = [
+    "spline_mcp",
+]
+deps-file = "pyproject.toml"
+exclude-deps = [
+    "hatchling",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+    "bandit",
+    "uvicorn",
+    "websockets",
+]
+
 [tool.crackerjack]
 # Baseline configuration (auto-bootstrapped 2026-08-20).
 # Hook stages run on `crackerjack run`; see crackerjack --help for the
