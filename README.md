@@ -19,6 +19,20 @@ Spline.design is a 3D design tool that exports interactive scenes for the web. T
 
 > **Note**: Spline does not have a traditional REST API. Scenes are created in the Spline editor and exported as `.splinecode` files for runtime use.
 
+## Spline V2 Compatibility
+
+Spline V2 (released August 20, 2026) ships its own MCP server inside the rebuilt Spline desktop app that lets AI agents drive the editor directly — creating and modifying objects, materials, lights, cameras, booleans, particles, cloners, lathes, sky, variables, events, and states. See the [Spline V2 launch announcement](https://blog.spline.design/spline-v2) for details.
+
+This server fills a **different, complementary niche**:
+
+| Workflow stage | Tool |
+|---|---|
+| **Authoring** — building / editing the scene in the editor | [Spline V2 MCP](https://blog.spline.design/spline-v2) (bundled with the Spline desktop app) |
+| **Embedding** — putting the exported scene into your React / Next.js / vanilla app | **This server** (`spline-mcp`) |
+| **Runtime control** — manipulating variables / events from your app at runtime | Both cooperate: V2 MCP builds the scene; this server emits the JS that drives `setNumberVariable()` / `emitEvent()` from the host app |
+
+Concretely, this server does **not** edit scenes — it operates strictly on already-exported `.splinecode` URLs. If you need an agent to author a new scene from scratch, install the [Spline desktop app](https://spline.design) and use its built-in MCP server. Use **this server** when you have a published `.splinecode` URL and want to scaffold the React / Next.js / vanilla integration, cache the scene asset, wire up runtime event handlers, or plug into Mahavishnu / n8n.
+
 ## Installation
 
 ```bash
