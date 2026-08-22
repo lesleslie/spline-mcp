@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-08-22
+
+### Changed
+
+- spline-mcp: Mdformat trailing-newline drift from crackerjack bump
+
+### Documentation
+
+- readme: Document Spline V2 MCP server boundary
+
+### Internal
+
+- Bump version to 0.4.0
+- Bump version to 0.4.0
+- Remove n8n integration
+
 ## [0.4.0] - 2026-08-21
 
 ### Added

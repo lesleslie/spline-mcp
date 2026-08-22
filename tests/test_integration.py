@@ -231,4 +231,3 @@ class TestConfiguration:
 
         assert client.url == settings.websocket_url
         assert client.auto_reconnect == settings.websocket_auto_reconnect
-
