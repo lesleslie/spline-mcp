@@ -215,7 +215,6 @@ def integration_status() -> None:
     """Check status of integrations."""
     import asyncio
 
-    from spline_mcp.integrations.n8n import N8NClient
     from spline_mcp.integrations.websocket import WebSocketClient
 
     settings = get_settings()
@@ -236,18 +235,6 @@ def integration_status() -> None:
         else:
             results["websocket"] = {"enabled": False}
 
-        # Check n8n
-        if settings.n8n_enabled:
-            n8n_client = N8NClient(base_url=settings.n8n_url)
-            available = await n8n_client.check_availability()
-            results["n8n"] = {
-                "enabled": True,
-                "available": available,
-                "url": settings.n8n_url,
-            }
-        else:
-            results["n8n"] = {"enabled": False}
-
         return results
 
     results = asyncio.run(_check())
@@ -261,14 +248,6 @@ def integration_status() -> None:
         console.print(f"WebSocket: {status} ({ws['url']})")
     else:
         console.print("WebSocket: [yellow]Disabled[/]")
-
-    # n8n
-    n8n = results["n8n"]
-    if n8n["enabled"]:
-        status = "[green]Available[/]" if n8n["available"] else "[red]Unavailable[/]"
-        console.print(f"n8n: {status} ({n8n['url']})")
-    else:
-        console.print("n8n: [yellow]Disabled[/]")
 
 
 def main() -> None:

@@ -41,13 +41,6 @@ class TestSplineSettings:
         assert settings.websocket_url == "ws://localhost:8690"
         assert settings.websocket_auto_reconnect is True
 
-    def test_n8n_defaults(self) -> None:
-        """Test n8n default settings."""
-        settings = SplineSettings()
-
-        assert settings.n8n_enabled is True
-        assert settings.n8n_url == "http://localhost:3044"
-
     def test_cache_defaults(self) -> None:
         """Test cache default settings."""
         settings = SplineSettings()

@@ -14,7 +14,7 @@ Spline.design is a 3D design tool that exports interactive scenes for the web. T
 
 - **Code Generation**: Generate React, Next.js, and vanilla JS integration code
 - **Asset Management**: Download, cache, and validate `.splinecode` files
-- **Integration Support**: WebSocket (Mahavishnu) and n8n workflow integration
+- **Integration Support**: WebSocket (Mahavishnu) integration
 - **Helper Utilities**: URL building, event documentation, code snippets
 
 > **Note**: Spline does not have a traditional REST API. Scenes are created in the Spline editor and exported as `.splinecode` files for runtime use.
@@ -31,7 +31,7 @@ This server fills a **different, complementary niche**:
 | **Embedding** — putting the exported scene into your React / Next.js / vanilla app | **This server** (`spline-mcp`) |
 | **Runtime control** — manipulating variables / events from your app at runtime | Both cooperate: V2 MCP builds the scene; this server emits the JS that drives `setNumberVariable()` / `emitEvent()` from the host app |
 
-Concretely, this server does **not** edit scenes — it operates strictly on already-exported `.splinecode` URLs. If you need an agent to author a new scene from scratch, install the [Spline desktop app](https://spline.design) and use its built-in MCP server. Use **this server** when you have a published `.splinecode` URL and want to scaffold the React / Next.js / vanilla integration, cache the scene asset, wire up runtime event handlers, or plug into Mahavishnu / n8n.
+Concretely, this server does **not** edit scenes — it operates strictly on already-exported `.splinecode` URLs. If you need an agent to author a new scene from scratch, install the [Spline desktop app](https://spline.design) and use its built-in MCP server. Use **this server** when you have a published `.splinecode` URL and want to scaffold the React / Next.js / vanilla integration, cache the scene asset, wire up runtime event handlers, or pipe events into Mahavishnu.
 
 ## Installation
 
@@ -106,9 +106,7 @@ spline-mcp serve --http --port 3048
 |------|-------------|
 | `get_websocket_status` | Check Mahavishnu WebSocket connection |
 | `subscribe_to_channel` | Subscribe to real-time updates |
-| `get_n8n_status` | Check n8n availability |
-| `generate_n8n_workflow` | Generate n8n workflow for Spline |
-| `trigger_n8n_webhook` | Trigger n8n webhook |
+| `get_integration_status` | Status of all integrations |
 | `get_integration_status` | Status of all integrations |
 
 ### Documentation
@@ -137,9 +135,6 @@ Set via environment variables with `SPLINE_` prefix:
 | `SPLINE_WEBSOCKET_ENABLED` | `true` | Enable WebSocket integration |
 | `SPLINE_WEBSOCKET_URL` | `ws://localhost:8690` | Mahavishnu WebSocket URL |
 | `SPLINE_WEBSOCKET_AUTO_RECONNECT` | `true` | Automatically reconnect on disconnect |
-| `SPLINE_N8N_ENABLED` | `true` | Enable n8n integration |
-| `SPLINE_N8N_URL` | `http://localhost:3044` | n8n server URL |
-| `SPLINE_N8N_API_KEY` | _(unset)_ | n8n API key (required when n8n auth enabled) |
 | `SPLINE_ENABLE_HTTP_TRANSPORT` | `false` | Enable HTTP transport |
 | `SPLINE_HTTP_HOST` | `127.0.0.1` | HTTP server host |
 | `SPLINE_HTTP_PORT` | `3048` | HTTP server port |
@@ -200,8 +195,7 @@ spline_mcp/
 │   ├── manager.py      # Download, cache, validate
 │   └── validator.py    # Scene file validation
 ├── integrations/       # External integrations
-│   ├── websocket.py    # Mahavishnu WebSocket (soft failover)
-│   └── n8n.py          # n8n workflow integration
+│   └── websocket.py    # Mahavishnu WebSocket (soft failover)
 ├── tools/              # MCP tool definitions
 │   ├── generation.py   # Code generation tools
 │   ├── assets.py       # Asset management tools

@@ -31,7 +31,7 @@ Rationale per tier:
   or unset is FULL (per spec).
 - **STANDARD** — The daily-driver set: scene CRUD (assets), code
   import/export (generation), URL utilities (helpers), API reference
-  (docs). Excludes FULL-only WebSocket/n8n integrations that depend on
+  (docs). Excludes FULL-only WebSocket integrations that depend on
   external services being configured.
 - **FULL** — All 25 tools. The previous behavior.
 

@@ -119,20 +119,6 @@ class SplineSettings(OneiricMCPConfig, BaseSettings):
         description="Automatically reconnect on disconnect",
     )
 
-    # n8n integration
-    n8n_enabled: bool = Field(
-        default=True,
-        description="Enable n8n integration",
-    )
-    n8n_url: str = Field(
-        default="http://localhost:3044",
-        description="n8n server URL",
-    )
-    n8n_api_key: str | None = Field(
-        default=None,
-        description="n8n API key",
-    )
-
     # HTTP transport
     enable_http_transport: bool = Field(
         default=False,

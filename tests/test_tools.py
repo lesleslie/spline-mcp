@@ -329,32 +329,6 @@ class TestIntegrationTools:
         assert client.status == WebSocketStatus.DISCONNECTED
 
     @pytest.mark.asyncio
-    async def test_n8n_client_creation(self) -> None:
-        """Test n8n client can be created."""
-        from spline_mcp.integrations.n8n import N8NClient
-
-        client = N8NClient(
-            base_url="http://localhost:3044",
-            api_key="test-key",
-        )
-        assert client.base_url == "http://localhost:3044"
-        assert client.api_key == "test-key"
-
-    @pytest.mark.asyncio
-    async def test_n8n_workflow_generation(self) -> None:
-        """Test n8n workflow generation."""
-        from spline_mcp.integrations.n8n import N8NClient
-
-        client = N8NClient(base_url="http://localhost:3044")
-        workflow = client.generate_spline_workflow(
-            scene_url="https://prod.spline.design/test/scene.splinecode",
-            variable_mappings={"color": "data.color", "speed": "data.speed"},
-        )
-        assert workflow.name.startswith("Spline Update")
-        assert len(workflow.nodes) == 3
-        assert workflow.nodes[0]["type"] == "n8n-nodes-base.webhook"
-
-    @pytest.mark.asyncio
     async def test_integration_status_structure(self) -> None:
         """Test integration status returns correct structure."""
         from fastmcp import FastMCP
@@ -379,20 +353,6 @@ class TestIntegrationTools:
         result = await client.connect()
         assert result is False
         assert client.status == WebSocketStatus.ERROR
-
-    @pytest.mark.asyncio
-    async def test_n8n_soft_failover(self) -> None:
-        """Test n8n soft failover."""
-        from spline_mcp.integrations.n8n import N8NClient
-
-        client = N8NClient(base_url="http://nonexistent:9999")
-        # Check availability should fail gracefully
-        available = await client.check_availability()
-        assert available is False
-
-        # Operations should return None, not raise
-        result = await client.trigger_webhook("test", {})
-        assert result is None
 
 
 class TestAssetTools:

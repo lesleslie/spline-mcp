@@ -49,7 +49,6 @@ async def create_app() -> FastMCP:
         version=APP_VERSION,
         default_framework=settings.default_framework,
         websocket_enabled=settings.websocket_enabled,
-        n8n_enabled=settings.n8n_enabled,
     )
 
     app = FastMCP(name=APP_NAME, version=APP_VERSION)

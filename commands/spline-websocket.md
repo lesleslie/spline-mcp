@@ -21,7 +21,7 @@ Arguments:
 ## Workflow
 
 1. Call `mcp__spline__get_websocket_status` to confirm the WebSocket bridge is reachable and report the configured URL, reconnect policy, and any soft-failover state.
-2. Call `mcp__spline__get_integration_status` for a rollup that includes both the WebSocket and (if configured) the n8n integration, so the user can see the full integration picture.
+2. Call `mcp__spline__get_integration_status` for a rollup of the WebSocket integration state, so the user can see the full integration picture.
 3. Unless `--status-only` was supplied, call `mcp__spline__subscribe_to_channel` with the requested channel and duration. Stream messages back to the user until the duration elapses, then summarize what was received.
 4. If the status check returned `disconnected` or `error`, surface that to the user rather than silently retrying. Recommend the user verify `SPLINE_WEBSOCKET_URL` and the Mahavishnu server health.
 

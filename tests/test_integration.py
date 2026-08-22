@@ -1,4 +1,4 @@
-"""Integration tests for WebSocket and n8n integrations."""
+"""Integration tests for WebSocket integration."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from spline_mcp.integrations.n8n import N8NClient, N8NWorkflow
 from spline_mcp.integrations.websocket import (
     WebSocketClient,
     WebSocketMessage,
@@ -122,99 +121,6 @@ class TestWebSocketMessage:
         assert '"channel":"test"' in json_str
 
 
-class TestN8NClient:
-    """Tests for n8n client."""
-
-    def test_initialization(self) -> None:
-        """Test client initialization."""
-        client = N8NClient(
-            base_url="http://localhost:3044",
-            api_key="test-key",
-        )
-
-        assert client.base_url == "http://localhost:3044"
-        assert client.api_key == "test-key"
-        assert client._available is None  # Not checked yet
-
-    @pytest.mark.asyncio
-    async def test_soft_failover_on_unavailable(self) -> None:
-        """Test that unavailable n8n doesn't raise exception."""
-        client = N8NClient(base_url="http://localhost:99999")
-
-        available = await client.check_availability()
-        assert available is False
-        assert client._available is False
-
-    @pytest.mark.asyncio
-    async def test_create_workflow_unavailable(self) -> None:
-        """Test workflow creation when n8n unavailable."""
-        client = N8NClient(base_url="http://localhost:99999")
-
-        workflow = N8NWorkflow(name="Test")
-        result = await client.create_workflow(workflow)
-
-        # Should return None gracefully
-        assert result is None
-
-    @pytest.mark.asyncio
-    async def test_trigger_webhook_unavailable(self) -> None:
-        """Test webhook trigger when n8n unavailable."""
-        client = N8NClient(base_url="http://localhost:99999")
-
-        result = await client.trigger_webhook("test", {"data": "value"})
-
-        # Should return None gracefully
-        assert result is None
-
-    def test_generate_spline_workflow(self) -> None:
-        """Test Spline workflow generation."""
-        client = N8NClient(base_url="http://localhost:3044")
-
-        workflow = client.generate_spline_workflow(
-            scene_url="https://prod.spline.design/test/scene.splinecode",
-            variable_mappings={
-                "color": "data.color",
-                "speed": "data.speed",
-            },
-        )
-
-        assert workflow.name.startswith("Spline Update")
-        assert len(workflow.nodes) == 3
-        assert workflow.nodes[0]["type"] == "n8n-nodes-base.webhook"
-
-    def test_status_dict(self) -> None:
-        """Test status dictionary output."""
-        client = N8NClient(
-            base_url="http://localhost:3044",
-            api_key="secret",
-        )
-        status = client.get_status_dict()
-
-        assert "base_url" in status
-        assert "available" in status
-        assert "has_api_key" in status
-        assert status["base_url"] == "http://localhost:3044"
-        assert status["has_api_key"] is True
-
-
-class TestN8NWorkflow:
-    """Tests for n8n workflow model."""
-
-    def test_workflow_creation(self) -> None:
-        """Test workflow creation."""
-        workflow = N8NWorkflow(
-            name="Test Workflow",
-            nodes=[
-                {"type": "n8n-nodes-base.webhook", "name": "Webhook"},
-            ],
-            connections={},
-        )
-
-        assert workflow.name == "Test Workflow"
-        assert len(workflow.nodes) == 1
-        assert workflow.nodes[0]["type"] == "n8n-nodes-base.webhook"
-
-
 class TestIntegrationScenarios:
     """Tests for integration scenarios."""
 
@@ -290,33 +196,13 @@ class TestSoftFailover:
         assert status["status"] == WebSocketStatus.ERROR.value
 
     @pytest.mark.asyncio
-    async def test_n8n_unavailable_continue(self) -> None:
-        """Test that n8n unavailability doesn't break operation."""
-        client = N8NClient(base_url="http://nonexistent:9999")
-
-        # Check should fail gracefully
-        available = await client.check_availability()
-        assert available is False
-
-        # Operations should return None, not raise
-        result = await client.create_workflow(N8NWorkflow(name="Test"))
-        assert result is None
-
-        result = await client.trigger_webhook("test", {})
-        assert result is None
-
-    @pytest.mark.asyncio
-    async def test_both_integrations_unavailable(self) -> None:
-        """Test operation when both integrations unavailable."""
+    async def test_websocket_unavailable_continue(self) -> None:
+        """Test that WebSocket unavailability doesn't break operation."""
         ws_client = WebSocketClient(url="ws://nonexistent:9999")
-        n8n_client = N8NClient(base_url="http://nonexistent:9999")
 
-        # Both should fail gracefully
+        # Connection should fail gracefully
         ws_connected = await ws_client.connect()
-        n8n_available = await n8n_client.check_availability()
-
         assert ws_connected is False
-        assert n8n_available is False
 
         # Code generation should still work
         from spline_mcp.generators.react import ReactGenerator
@@ -346,14 +232,3 @@ class TestConfiguration:
         assert client.url == settings.websocket_url
         assert client.auto_reconnect == settings.websocket_auto_reconnect
 
-    def test_n8n_config_from_settings(self) -> None:
-        """Test n8n client from settings."""
-        from spline_mcp.config import get_settings
-
-        settings = get_settings()
-        client = N8NClient(
-            base_url=settings.n8n_url,
-            api_key=settings.n8n_api_key,
-        )
-
-        assert client.base_url == settings.n8n_url

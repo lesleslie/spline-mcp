@@ -249,7 +249,7 @@ async def test_full_registers_all_25_tools(monkeypatch: pytest.MonkeyPatch) -> N
     await apply_spline_tool_profile(server)
     names = {t.name for t in await server.list_tools()}
 
-    # All 25 spline tools
+    # All 22 spline tools
     expected_spline = {
         # generation (6)
         "generate_react_component",
@@ -270,12 +270,9 @@ async def test_full_registers_all_25_tools(monkeypatch: pytest.MonkeyPatch) -> N
         "list_event_types",
         "get_event_documentation",
         "generate_snippet",
-        # integration (6)
+        # integration (3)
         "get_websocket_status",
         "subscribe_to_channel",
-        "get_n8n_status",
-        "generate_n8n_workflow",
-        "trigger_n8n_webhook",
         "get_integration_status",
         # docs (3)
         "get_runtime_api_docs",
@@ -286,8 +283,8 @@ async def test_full_registers_all_25_tools(monkeypatch: pytest.MonkeyPatch) -> N
         f"FULL profile missing tools: {sorted(expected_spline - names)}"
     )
     assert "discover_tools" in names, "W0 helper must register discover_tools meta-tool"
-    assert len(names) == 26, (
-        f"Expected 26 (25 + discover_tools); got {len(names)}: {sorted(names)}"
+    assert len(names) == 23, (
+        f"Expected 23 (22 + discover_tools); got {len(names)}: {sorted(names)}"
     )
 
 
@@ -337,9 +334,6 @@ async def test_standard_has_19_daily_driver_tools(
     integration_only = {
         "get_websocket_status",
         "subscribe_to_channel",
-        "get_n8n_status",
-        "generate_n8n_workflow",
-        "trigger_n8n_webhook",
         "get_integration_status",
     }
     assert not (integration_only & names), (

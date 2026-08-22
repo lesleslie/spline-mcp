@@ -40,7 +40,6 @@ class TestServerCreation:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -50,7 +49,7 @@ class TestServerCreation:
         assert app.name == APP_NAME
 
     def test_create_app_registers_tools(self) -> None:
-        """Real production-path test: create_app() must register all 25 tools + discover_tools.
+        """Real production-path test: create_app() must register all 22 tools + discover_tools.
 
         Per the W2b.3 review lesson: tests that mock the dispatch helper
         cannot verify the SUT does the right thing. This test exercises
@@ -64,7 +63,6 @@ class TestServerCreation:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -91,9 +89,6 @@ class TestServerCreation:
             "generate_snippet",
             "get_websocket_status",
             "subscribe_to_channel",
-            "get_n8n_status",
-            "generate_n8n_workflow",
-            "trigger_n8n_webhook",
             "get_integration_status",
             "get_runtime_api_docs",
             "get_installation_guide",
@@ -126,7 +121,6 @@ class TestGetApp:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -146,7 +140,6 @@ class TestGetApp:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -169,7 +162,6 @@ class TestDynamicAttributeAccess:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -215,7 +207,6 @@ class TestOneiricConvention:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):
@@ -264,7 +255,6 @@ class TestOneiricConvention:
             settings = MagicMock()
             settings.default_framework = "react"
             settings.websocket_enabled = True
-            settings.n8n_enabled = True
             mock_settings.return_value = settings
 
             with patch("spline_mcp.server.setup_logging"):

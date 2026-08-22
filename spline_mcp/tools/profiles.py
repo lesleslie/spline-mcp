@@ -10,8 +10,8 @@ Profile tiers:
     STANDARD: Daily-driver tools — assets (scene CRUD), generation (code
               import/export), helpers (URL utilities), docs (API reference).
               19 tools across 4 groups.
-    FULL:     All groups including integration (WebSocket + n8n workflows).
-              25 tools across 5 groups.
+    FULL:     All groups including integration (WebSocket integration).
+              22 tools across 5 groups.
 
 The dispatch surface (``PROFILE_REGISTRATIONS`` + ``REGISTRATION_MAP`` +
 ``register_all_tool_groups`` + ``apply_spline_tool_profile``) is consumed
