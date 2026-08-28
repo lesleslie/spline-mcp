@@ -325,7 +325,7 @@ def register_generation_tools(app: FastMCP) -> None:
                             target_object=h.get("target_object"),
                         )
                     )
-                except (ValueError, KeyError):
+                except ValueError, KeyError:
                     continue
 
         bindings = []
