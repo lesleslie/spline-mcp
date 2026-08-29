@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "spline-mcp"
-version = "0.5.0"
+version = "0.5.1"
 description = "MCP server for Spline.design code generation and asset management"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
@@ -97,9 +97,6 @@ exclude_lines = [
 [tool.bandit]
 exclude_dirs = [".venv", "tests"]
 skips = ["B101"]
-
-[tool.uv.sources]
-mcp-common = { path = "/Users/les/Projects/mcp-common", editable = true }
 
 [tool.creosote]
 paths = [
