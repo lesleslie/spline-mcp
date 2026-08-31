@@ -64,7 +64,7 @@ spline-mcp serve
 ### HTTP Mode
 
 ```bash
-spline-mcp serve --http --port 3048
+spline-mcp serve --http --port 3052
 ```
 
 ## Available Tools
@@ -135,9 +135,9 @@ Set via environment variables with `SPLINE_` prefix:
 | `SPLINE_WEBSOCKET_ENABLED` | `true` | Enable WebSocket integration |
 | `SPLINE_WEBSOCKET_URL` | `ws://localhost:8690` | Mahavishnu WebSocket URL |
 | `SPLINE_WEBSOCKET_AUTO_RECONNECT` | `true` | Automatically reconnect on disconnect |
-| `SPLINE_ENABLE_HTTP_TRANSPORT` | `false` | Enable HTTP transport |
+| `SPLINE_ENABLE_HTTP_TRANSPORT` | `true` | Enable HTTP transport |
 | `SPLINE_HTTP_HOST` | `127.0.0.1` | HTTP server host |
-| `SPLINE_HTTP_PORT` | `3048` | HTTP server port |
+| `SPLINE_HTTP_PORT` | `3052` | HTTP server port |
 | `SPLINE_LOG_LEVEL` | `INFO` | Logging level |
 | `SPLINE_LOG_JSON` | `true` | Use JSON logging format |
 
@@ -216,7 +216,7 @@ Part of the **Bodai Ecosystem**:
 | Dhara | Curator | 8683 |
 | Session-Buddy | Builder | 8678 |
 | Crackerjack | Inspector | 8676 |
-| **spline-mcp** | 3D Orchestrator | 3048 |
+| **spline-mcp** | 3D Orchestrator | 3052 |
 
 ## Installation via Bodai Marketplace
 

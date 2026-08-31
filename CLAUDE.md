@@ -19,7 +19,7 @@ Part of the **Bodai Ecosystem**:
 | Dhara | Curator | 8683 |
 | Session-Buddy | Builder | 8678 |
 | Crackerjack | Inspector | 8676 |
-| **spline-mcp** | 3D Orchestrator | 3048 |
+| **spline-mcp** | 3D Orchestrator | 3052 |
 
 ## Development Commands
 
@@ -53,7 +53,7 @@ mypy spline_mcp/
 spline-mcp serve
 
 # HTTP mode
-spline-mcp serve --http --port 3048
+spline-mcp serve --http --port 3052
 
 # Health check
 spline-mcp health

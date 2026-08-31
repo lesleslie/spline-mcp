@@ -14,9 +14,9 @@ default_scene_id: null
 auto_save: true
 
 # HTTP Transport
-enable_http_transport: false
+enable_http_transport: true
 http_host: "127.0.0.1"
-http_port: 3048
+http_port: 3052
 
 # Logging
 log_level: "INFO"

@@ -25,7 +25,7 @@ def callback(ctx: typer.Context) -> None:
 @app.command()
 def serve(
     http: bool = False,
-    port: int = 3048,
+    port: int = 3052,
     host: str = "127.0.0.1",
     verbose: bool = False,
 ) -> None:

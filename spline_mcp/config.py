@@ -121,7 +121,7 @@ class SplineSettings(OneiricMCPConfig, BaseSettings):
 
     # HTTP transport
     enable_http_transport: bool = Field(
-        default=False,
+        default=True,
         description="Enable HTTP transport",
     )
     http_host: str = Field(
@@ -129,7 +129,7 @@ class SplineSettings(OneiricMCPConfig, BaseSettings):
         description="HTTP server host",
     )
     http_port: int = Field(
-        default=3048,
+        default=3052,
         ge=1024,
         le=65535,
         description="HTTP server port",
