@@ -8,7 +8,7 @@ from datetime import UTC
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2 as httpx
 from pydantic import BaseModel, Field
 
 from spline_mcp.config import get_logger_instance, get_settings
