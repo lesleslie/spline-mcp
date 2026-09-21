@@ -14,7 +14,7 @@ Spline.design is a 3D design tool that exports interactive scenes for the web. T
 
 - **Code Generation**: Generate React, Next.js, and vanilla JS integration code
 - **Asset Management**: Download, cache, and validate `.splinecode` files
-- **Integration Support**: WebSocket event sink (see Bodai integration section)
+- **Integration Support**: WebSocket event sink
 - **Helper Utilities**: URL building, event documentation, code snippets
 
 > **Note**: Spline does not have a traditional REST API. Scenes are created in the Spline editor and exported as `.splinecode` files for runtime use.
@@ -31,7 +31,7 @@ This server fills a **different, complementary niche**:
 | **Embedding** — putting the exported scene into your React / Next.js / vanilla app | **This server** (`spline-mcp`) |
 | **Runtime control** — manipulating variables / events from your app at runtime | Both cooperate: V2 MCP builds the scene; this server emits the JS that drives `setNumberVariable()` / `emitEvent()` from the host app |
 
-Concretely, this server does **not** edit scenes — it operates strictly on already-exported `.splinecode` URLs. If you need an agent to author a new scene from scratch, install the [Spline desktop app](https://spline.design) and use its built-in MCP server. Use **this server** when you have a published `.splinecode` URL and want to scaffold the React / Next.js / vanilla integration, cache the scene asset, wire up runtime event handlers, or pipe events into the external WebSocket event sink (see Bodai integration section).
+Concretely, this server does **not** edit scenes — it operates strictly on already-exported `.splinecode` URLs. If you need an agent to author a new scene from scratch, install the [Spline desktop app](https://spline.design) and use its built-in MCP server. Use **this server** when you have a published `.splinecode` URL and want to scaffold the React / Next.js / vanilla integration, cache the scene asset, wire up runtime event handlers, or pipe events into the external WebSocket event sink.
 
 ## Installation
 
@@ -104,7 +104,7 @@ spline-mcp serve --http --port 3052
 
 | Tool | Description |
 |------|-------------|
-| `get_websocket_status` | Check external WebSocket event-sink connection (see Bodai integration section) |
+| `get_websocket_status` | Check external WebSocket event-sink connection |
 | `subscribe_to_channel` | Subscribe to real-time updates |
 | `get_integration_status` | Status of all integrations |
 | `get_integration_status` | Status of all integrations |
@@ -133,7 +133,7 @@ Set via environment variables with `SPLINE_` prefix:
 | `SPLINE_MAX_CACHE_SIZE_MB` | `500` | Maximum cache size |
 | `SPLINE_AUTO_VALIDATE` | `true` | Automatically validate downloaded scenes |
 | `SPLINE_WEBSOCKET_ENABLED` | `true` | Enable WebSocket integration |
-| `SPLINE_WEBSOCKET_URL` | `ws://localhost:8690` | External WebSocket event-sink URL (see Bodai integration section) |
+| `SPLINE_WEBSOCKET_URL` | `ws://localhost:8690` | External WebSocket event-sink URL |
 | `SPLINE_WEBSOCKET_AUTO_RECONNECT` | `true` | Automatically reconnect on disconnect |
 | `SPLINE_ENABLE_HTTP_TRANSPORT` | `true` | Enable HTTP transport |
 | `SPLINE_HTTP_HOST` | `127.0.0.1` | HTTP server host |
@@ -205,10 +205,6 @@ spline_mcp/
 └── server.py           # FastMCP application
 ```
 
-## Ecosystem Integration
-
-External integrations are documented in the Bodai integration section at the end of this README.
-
 ## Installation via Claude Code marketplace
 
 This repo ships a Claude Code plugin manifest (`.claude-plugin/plugin.json`) plus a colocated `.mcp.json` and three slash commands in `commands/`. To install, register the [www-mcp-servers marketplace](https://github.com/lesleslie/www-mcp-servers) with Claude Code, then install the plugin by name. Once installed, the slash commands `/spline-generate`, `/spline-assets`, and `/spline-websocket` become available alongside the `mcp__spline__*` tools. Make sure the spline-mcp HTTP server is running on its configured port before invoking the slash commands.
@@ -217,17 +213,6 @@ This repo ships a Claude Code plugin manifest (`.claude-plugin/plugin.json`) plu
 
 BSD-3-Clause
 
-## Bodai integration
-
-This server emits WebSocket events to an external sink (default `ws://localhost:8690`) for cross-system observability. The sink URL is configurable via `SPLINE_WEBSOCKET_URL`. Connection status is surfaced by `get_websocket_status`.
-
-This server is part of the wider Wedgwood Web Works ecosystem and sits alongside the following Bodai components:
-
-| Component | Role | Port |
-|-----------|------|------|
-| Mahavishnu | Orchestrator | 8680 |
-| Akosha | Seer | 8682 |
-| Dhara | Curator | 8683 |
-| Session-Buddy | Builder | 8678 |
-| Crackerjack | Inspector | 8676 |
-| **spline-mcp** | 3D Orchestrator | 3052 |
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.

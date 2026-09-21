@@ -132,12 +132,6 @@ helpers, not in a single client class:
 `spline_mcp/client.py` is a thin placeholder; reach for the modules above
 when adding new scene/object/material behavior.
 
-## Bodai integration
-
-When installed alongside the [Bodai ecosystem](https://github.com/lesleslie/bodai),
-spline-mcp participates as the 3D scene orchestration component. The
-**`spline-mcp`** component owns port **3052** and integrates with
-Mahavishnu's WebSocket infrastructure for real-time event broadcasting
-(see `spline_mcp/integrations/websocket.py`). No Bodai-specific code is
-imported at runtime — integration is via the shared mcp-common substrate
-and the Mahavishnu WebSocket URL configured in `settings/spline-mcp.yaml`.
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.
