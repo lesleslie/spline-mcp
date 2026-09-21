@@ -1,14 +1,12 @@
 {
   "author": {
-    "name": "Bodai"
+    "name": "Wedgwood Web Works"
   },
-  "description": "Bodai plugin for the spline-mcp 3D scene code generation and asset management server.",
+  "description": "Plugin for the spline-mcp 3D scene code generation and asset management server.",
   "keywords": [
-    "bodai",
     "mcp",
     "spline",
-    "3d",
-    "code-generation"
+    "3d-scenes"
   ],
   "mcpServers": "./.mcp.json",
   "name": "spline",
