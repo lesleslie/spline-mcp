@@ -242,7 +242,7 @@ class TestGenerateCommand:
             )
 
         printed = " ".join(str(c.args[0]) for c in mock_print.call_args_list if c.args)
-        assert "useWebSocket" in printed or "@bodai" in printed
+        assert "useWebSocket" in printed
 
 
 class TestDownloadCommand:

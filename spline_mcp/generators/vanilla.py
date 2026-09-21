@@ -147,7 +147,7 @@ class VanillaJSGenerator(CodeGenerator):
       ws = new WebSocket('{ws_url}');
 
       ws.onopen = () => {{
-        console.log('WebSocket connected to Mahavishnu');
+        console.log('WebSocket connected');
         ws.send(JSON.stringify({{ type: 'subscribe', channel: 'spline:variables' }}));
       }};
 

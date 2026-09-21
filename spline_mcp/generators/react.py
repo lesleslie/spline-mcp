@@ -71,9 +71,6 @@ class ReactGenerator(CodeGenerator):
 
         imports.append("import Spline from '@splinetool/react-spline';")
 
-        if opts.include_websocket:
-            imports.append("import {{ useWebSocket }} from '@bodai/mahavishnu-client';")
-
         return "\n".join(imports)
 
     def _build_props_interface(self, opts: GenerationOptions) -> str:
@@ -168,7 +165,13 @@ class ReactGenerator(CodeGenerator):
         return "\n".join(lines)
 
     def _build_websocket_integration(self, opts: GenerationOptions) -> str:
-        """Build Mahavishnu WebSocket integration code."""
+        """Build WebSocket integration code.
+
+        Emits a hook call (`useWebSocket(...)`) that consumers must
+        provide themselves — there is no canonical npm package for the
+        orchestrator's event-bus subscription. The TODO comment makes
+        the gap explicit at the call site.
+        """
         if not opts.include_websocket:
             return ""
 
@@ -176,6 +179,9 @@ class ReactGenerator(CodeGenerator):
         ws_url = opts.websocket_url or "ws://localhost:8690"
 
         lines = [
+            f"{indent}// TODO: import your useWebSocket hook — no canonical package exists.",
+            f"{indent}// import {{ useWebSocket }} from '<your-websocket-hook-package>';",
+            "",
             f"{indent}const splineRef = useRef<any>();",
             f"{indent}const {{ subscribe, isConnected }} = useWebSocket('{ws_url}');",
             "",
