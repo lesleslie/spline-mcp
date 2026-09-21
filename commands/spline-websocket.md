@@ -1,12 +1,12 @@
 ---
-description: Check the Spline Mahavishnu WebSocket connection, subscribe to a channel, and report integration status.
+description: Check the Spline orchestrator WebSocket connection, subscribe to a channel, and report integration status.
 argument-hint: "[--channel <name>] [--status-only] [--duration <seconds>]"
 allowed-tools: mcp__spline__get_websocket_status, mcp__spline__subscribe_to_channel, mcp__spline__get_integration_status
 ---
 
 # /spline-websocket
 
-Inspect and interact with the Spline Mahavishnu WebSocket bridge so generated Spline scenes can subscribe to runtime variable updates.
+Inspect and interact with the Spline orchestrator WebSocket bridge so generated Spline scenes can subscribe to runtime variable updates.
 
 ## Usage
 
@@ -23,7 +23,7 @@ Arguments:
 1. Call `mcp__spline__get_websocket_status` to confirm the WebSocket bridge is reachable and report the configured URL, reconnect policy, and any soft-failover state.
 2. Call `mcp__spline__get_integration_status` for a rollup of the WebSocket integration state, so the user can see the full integration picture.
 3. Unless `--status-only` was supplied, call `mcp__spline__subscribe_to_channel` with the requested channel and duration. Stream messages back to the user until the duration elapses, then summarize what was received.
-4. If the status check returned `disconnected` or `error`, surface that to the user rather than silently retrying. Recommend the user verify `SPLINE_WEBSOCKET_URL` and the Mahavishnu server health.
+4. If the status check returned `disconnected` or `error`, surface that to the user rather than silently retrying. Recommend the user verify `SPLINE_WEBSOCKET_URL` and the orchestrator server health.
 
 ## Example
 

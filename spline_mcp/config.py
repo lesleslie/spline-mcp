@@ -36,7 +36,7 @@ except ImportError:
 class SplineSettings(OneiricMCPConfig, BaseSettings):
     """Spline MCP server configuration.
 
-    Inherits from OneiricMCPConfig (Bodai convention) and BaseSettings
+    Inherits from OneiricMCPConfig (mcp-common convention) and BaseSettings
     (pydantic-settings env loading). Multi-inheritance preserves the
     existing SPLINE_ env_prefix behavior while satisfying the
     ``issubclass(SplineSettings, OneiricMCPConfig)`` convention guard.
@@ -105,14 +105,14 @@ class SplineSettings(OneiricMCPConfig, BaseSettings):
         description="Automatically validate downloaded scenes",
     )
 
-    # WebSocket integration (Mahavishnu)
+    # WebSocket integration (event-broadcast protocol)
     websocket_enabled: bool = Field(
         default=True,
-        description="Enable WebSocket integration with Mahavishnu",
+        description="Enable WebSocket integration with the orchestrator's event bus",
     )
     websocket_url: str = Field(
         default="ws://localhost:8690",
-        description="Mahavishnu WebSocket server URL",
+        description="Orchestrator WebSocket server URL",
     )
     websocket_auto_reconnect: bool = Field(
         default=True,

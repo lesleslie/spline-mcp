@@ -60,7 +60,7 @@ async def create_app() -> FastMCP:
         version=APP_VERSION,
     )
 
-    # OpenTelemetry middleware (Bodai convention)
+    # OpenTelemetry middleware (mcp-common convention)
     _attach_otel_middleware(app)
 
     # Apply tool profile dispatch (SPLINE_TOOL_PROFILE env var).

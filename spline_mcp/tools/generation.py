@@ -40,7 +40,7 @@ def register_generation_tools(app: FastMCP) -> None:
             component_name: Name of the generated component
             typescript: Generate TypeScript code
             lazy_load: Use lazy loading with Suspense
-            include_websocket: Include Mahavishnu WebSocket integration
+            include_websocket: Include orchestrator WebSocket integration
             websocket_url: WebSocket server URL
 
         Returns:
@@ -93,7 +93,7 @@ def register_generation_tools(app: FastMCP) -> None:
 
         Args:
             scene_url: URL to the .splinecode file or scene ID
-            include_websocket: Include Mahavishnu WebSocket integration
+            include_websocket: Include orchestrator WebSocket integration
             websocket_url: WebSocket server URL
 
         Returns:
@@ -144,7 +144,7 @@ def register_generation_tools(app: FastMCP) -> None:
             component_name: Name of the generated component
             typescript: Generate TypeScript code
             ssr_placeholder: Generate SSR placeholder
-            include_websocket: Include Mahavishnu WebSocket integration
+            include_websocket: Include orchestrator WebSocket integration
             websocket_url: WebSocket server URL
 
         Returns:
@@ -300,7 +300,7 @@ def register_generation_tools(app: FastMCP) -> None:
             component_name: Name of the generated component
             event_handlers: List of event handler configs
             variables: Dictionary of variable bindings
-            include_websocket: Include Mahavishnu WebSocket integration
+            include_websocket: Include orchestrator WebSocket integration
 
         Returns:
             Complete integration code package

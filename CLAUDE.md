@@ -6,20 +6,9 @@ For a shorter, tool-neutral bootstrap document, start with `AGENTS.md`.
 
 ## Project Overview
 
-Spline MCP Server is a Model Context Protocol server for orchestrating Spline.design 3D scenes. It provides tools for managing 3D objects, materials, events, and runtime state.
-
-## Ecosystem Context
-
-Part of the **Bodai Ecosystem**:
-
-| Component | Role | Port |
-|-----------|------|------|
-| Mahavishnu | Orchestrator | 8680 |
-| Akosha | Seer | 8682 |
-| Dhara | Curator | 8683 |
-| Session-Buddy | Builder | 8678 |
-| Crackerjack | Inspector | 8676 |
-| **spline-mcp** | 3D Orchestrator | 3052 |
+Spline MCP Server is a Model Context Protocol server for orchestrating Spline.design 3D scenes. It provides tools for managing 3D objects, materials, events, and runtime state. The
+**`spline-mcp`** component owns port **3052** (see `spline_mcp/__init__.py`
+`DEFAULT_PORT`).
 
 ## Development Commands
 
@@ -142,3 +131,13 @@ helpers, not in a single client class:
 
 `spline_mcp/client.py` is a thin placeholder; reach for the modules above
 when adding new scene/object/material behavior.
+
+## Bodai integration
+
+When installed alongside the [Bodai ecosystem](https://github.com/lesleslie/bodai),
+spline-mcp participates as the 3D scene orchestration component. The
+**`spline-mcp`** component owns port **3052** and integrates with
+Mahavishnu's WebSocket infrastructure for real-time event broadcasting
+(see `spline_mcp/integrations/websocket.py`). No Bodai-specific code is
+imported at runtime — integration is via the shared mcp-common substrate
+and the Mahavishnu WebSocket URL configured in `settings/spline-mcp.yaml`.

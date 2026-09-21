@@ -91,7 +91,7 @@ class GenerationOptions(BaseModel):
     )
     include_websocket: bool = Field(
         default=False,
-        description="Include Mahavishnu WebSocket integration",
+        description="Include orchestrator WebSocket integration",
     )
     websocket_url: str | None = Field(
         default="ws://localhost:8690",

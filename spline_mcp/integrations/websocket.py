@@ -1,4 +1,4 @@
-"""WebSocket integration with soft failover for Mahavishnu."""
+"""WebSocket integration with soft failover for the orchestrator's event bus."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ class WebSocketMessage(BaseModel):
 
 
 class WebSocketClient:
-    """WebSocket client with soft failover for Mahavishnu integration.
+    """WebSocket client with soft failover for the orchestrator's event bus.
 
     This client gracefully handles connection failures and continues
     operation without WebSocket support when unavailable.
@@ -112,7 +112,7 @@ class WebSocketClient:
             self._reconnect_count = 0
 
             logger.info(
-                "WebSocket connected to Mahavishnu",
+                "WebSocket connected to orchestrator",
                 url=self.url,
             )
 
