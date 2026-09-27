@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2026-09-26
+
+### Fixed
+
+- generators: Remove placeholder @bodai/mahavishnu-client reference
+
+### Removed
+
+- docs+code: drop Bodai/Vishnu references from instruction files and source comments
+
+### Documentation
+
+- Add docs/assets/images/ + .scratch/ convention
+- Drop Bodai integration framing and add substrate note
+
+### Internal
+
+- deps: Bump mcp-common floor to >=0.26.0,<0.27.0 (Phase 2.5)
+- gitignore: Apply Bodai canonical snippet
+- plugin: Rebadge from Bodai + consolidate Bodai/Vishnu references
+- spline-mcp: Bump mcp-common dep range to >=0.30.0
+
 ## [0.5.3] - 2026-08-31
 
 ### Testing
